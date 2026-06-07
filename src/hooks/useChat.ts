@@ -16,6 +16,7 @@ interface UseChatReturn {
   sendMessage: (text: string) => void;
   showAchievement: boolean;
   dismissAchievement: () => void;
+  isDemoMode: boolean;
 }
 
 export function useChat(skillId: string): UseChatReturn {
@@ -24,6 +25,8 @@ export function useChat(skillId: string): UseChatReturn {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [showAchievement, setShowAchievement] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(false);
+
   const userMessageCount = useRef(0);
   const replyIndex = useRef(0);
 
@@ -37,6 +40,7 @@ export function useChat(skillId: string): UseChatReturn {
 
   const simulateAIReply = useCallback((currentCount: number) => {
     setIsTyping(true);
+    setIsDemoMode(true);
 
     const delay = 800 + Math.random() * 800; // 0.8s–1.6s typing feel
 
@@ -62,7 +66,7 @@ export function useChat(skillId: string): UseChatReturn {
   }, [activeSkill]);
 
   const sendMessage = useCallback(
-    (text: string) => {
+    async (text: string) => {
       if (!text.trim()) return;
 
       userMessageCount.current += 1;
@@ -75,16 +79,62 @@ export function useChat(skillId: string): UseChatReturn {
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, userMessage]);
-      simulateAIReply(currentCount);
+      // Stage user message locally
+      const updatedMessages = [...messages, userMessage];
+      setMessages(updatedMessages);
+      setIsTyping(true);
+
+      try {
+        // Attempt live chat completion
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: updatedMessages,
+            skillId: activeSkill.id,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("AI Endpoint returned an error response");
+        }
+
+        const data = await response.json();
+
+        if (!data.reply) {
+          throw new Error("Empty reply text returned");
+        }
+
+        const aiMessage: Message = {
+          id: `msg-ai-${Date.now()}`,
+          role: "ai",
+          content: data.reply,
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, aiMessage]);
+        setIsTyping(false);
+        setIsDemoMode(false);
+
+        // Trigger achievement toast after the user's 2nd message exchange
+        if (currentCount === 2) {
+          setTimeout(() => setShowAchievement(true), 500);
+        }
+
+      } catch (error) {
+        console.warn("API failure, falling back to simulated reply:", error);
+        simulateAIReply(currentCount);
+      }
     },
-    [simulateAIReply]
+    [messages, activeSkill, simulateAIReply]
   );
 
   const dismissAchievement = useCallback(() => {
     setShowAchievement(false);
   }, []);
 
-  return { messages, isTyping, sendMessage, showAchievement, dismissAchievement };
+  return { messages, isTyping, sendMessage, showAchievement, dismissAchievement, isDemoMode };
 }
 

@@ -36,7 +36,7 @@ export default function TermsPage() {
 
           {/* Document Content */}
           <div className="bg-white/[0.01] border border-white/5 p-6 md:p-10 rounded-3xl backdrop-blur-md flex flex-col gap-8 text-white/70 text-sm md:text-base leading-relaxed">
-            
+
             <div>
               <h2 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-neon" />
@@ -77,7 +77,7 @@ export default function TermsPage() {
                   <strong className="text-white/90">Cancellations:</strong> You can cancel your subscription at any point. Your access will remain active until the end of the current billing term.
                 </li>
                 <li>
-                  <strong className="text-white/90">Refunds:</strong> We provide a 14-day 100% money-back guarantee. If you are dissatisfied, request a refund within 14 days of your initial signup via <strong className="text-white">support@artificial.university</strong>.
+                  <strong className="text-white/90">Refunds:</strong> We provide a 14-day 100% money-back guarantee. If you are dissatisfied, request a refund within 14 days of your initial signup via <strong className="text-white">reach.agtech@gmail.com</strong>.
                 </li>
               </ul>
             </div>

@@ -69,7 +69,7 @@ export default function ContactPage() {
 
         <div className="max-w-5xl mx-auto w-full relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            
+
             {/* Info Column (5 cols) */}
             <div className="lg:col-span-5 flex flex-col gap-8">
               <div>
@@ -86,7 +86,7 @@ export default function ContactPage() {
 
               {/* Info Cards */}
               <div className="flex flex-col gap-4">
-                
+
                 {/* Email Support Card */}
                 <div className="p-5 rounded-2xl bg-white/[0.01] border border-white/5 flex gap-4 items-start">
                   <span className="text-2xl">✉️</span>
@@ -94,7 +94,7 @@ export default function ContactPage() {
                     <h3 className="text-sm font-bold text-white mb-0.5">Email Support</h3>
                     <p className="text-white/40 text-xs mb-2">For billing and general inquiries.</p>
                     <a
-                      href="mailto:support@artificial.university"
+                      href="mailto:reach.agtech@gmail.com"
                       className="text-neon text-xs font-semibold hover:underline"
                     >
                       support@artificial.university
@@ -134,7 +134,7 @@ export default function ContactPage() {
             {/* Form Column (7 cols) */}
             <div className="lg:col-span-7">
               <div className="relative bg-white/[0.02] border border-white/8 p-6 md:p-10 rounded-3xl backdrop-blur-md">
-                
+
                 {isSubmitted ? (
                   // Success State
                   <div className="text-center py-12 flex flex-col items-center gap-6 animate-fade-up">

@@ -16,7 +16,7 @@ function ClassroomContent() {
   const activeSkill = SKILLS_DATA.find((s) => s.id === skillId) || SKILLS_DATA[0];
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { messages, isTyping, sendMessage, showAchievement, dismissAchievement } = useChat(activeSkill.id);
+  const { messages, isTyping, sendMessage, showAchievement, dismissAchievement, isDemoMode } = useChat(activeSkill.id);
 
   // Get current active lesson or fall back to skill name
   const activeLesson = activeSkill.curriculum
@@ -91,11 +91,19 @@ function ClassroomContent() {
                 <p className="text-[10px] text-white/30">Active · {activeLesson}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-white/20">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-              </svg>
-              <span className="text-[10px]">Ask anything — your AI won&apos;t judge</span>
+            <div className="flex items-center gap-4">
+              {isDemoMode && (
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-semibold animate-fade-up">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  Demo Mode (Simulated Replies)
+                </div>
+              )}
+              <div className="hidden sm:flex items-center gap-2 text-white/20">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                </svg>
+                <span className="text-[10px]">Ask anything — your AI won&apos;t judge</span>
+              </div>
             </div>
           </div>
 

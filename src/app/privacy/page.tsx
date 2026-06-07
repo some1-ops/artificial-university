@@ -36,7 +36,7 @@ export default function PrivacyPage() {
 
           {/* Document Content */}
           <div className="bg-white/[0.01] border border-white/5 p-6 md:p-10 rounded-3xl backdrop-blur-md flex flex-col gap-8 text-white/70 text-sm md:text-base leading-relaxed">
-            
+
             <div>
               <h2 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-neon" />
@@ -110,7 +110,7 @@ export default function PrivacyPage() {
                 5. Your Rights & Contact
               </h2>
               <p>
-                You have the right to request a complete deletion of your account details and message transcripts at any time. To request data deletion or ask questions regarding our privacy rules, please email us at <strong className="text-white">privacy@artificial.university</strong>.
+                You have the right to request a complete deletion of your account details and message transcripts at any time. To request data deletion or ask questions regarding our privacy rules, please email us at <strong className="text-white">reach.agtech@gmail.com</strong>.
               </p>
             </div>
 
