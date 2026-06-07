@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 // ============================================================
 // Footer.tsx — Minimalist branded footer
 // ============================================================
@@ -12,16 +14,16 @@ export default function Footer() {
             <span className="text-neon font-black text-[10px]">AU</span>
           </div>
           <span className="text-white/30 text-sm font-medium">
-            onlineai <span className="text-white/15">·</span>{" "}
+            artificial university <span className="text-white/15">·</span>{" "}
             <span className="text-neon/60">by AG</span>
           </span>
         </div>
 
         {/* Legal + links */}
         <div className="flex items-center gap-6 text-xs text-white/20">
-          <a href="#" className="hover:text-white/40 transition-colors duration-200">Privacy</a>
-          <a href="#" className="hover:text-white/40 transition-colors duration-200">Terms</a>
-          <a href="#" className="hover:text-white/40 transition-colors duration-200">Contact</a>
+          <Link href="/privacy" className="hover:text-white/40 transition-colors duration-200">Privacy</Link>
+          <Link href="/terms" className="hover:text-white/40 transition-colors duration-200">Terms</Link>
+          <Link href="/contact" className="hover:text-white/40 transition-colors duration-200">Contact</Link>
         </div>
 
         {/* Copyright */}
