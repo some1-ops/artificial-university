@@ -5,11 +5,11 @@
 // ============================================================
 
 import { useState } from "react";
-import { CURRICULUM, getOverallProgress, Module, Lesson } from "@/lib/mockData";
-
-interface SidebarProps {
+import { getOverallProgress, Module, Lesson } from "@/lib/mockData";interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  curriculum: Module[];
+  skillName: string;
 }
 
 function LessonItem({ lesson }: { lesson: Lesson }) {
@@ -91,8 +91,8 @@ function ModuleAccordion({ module }: { module: Module }) {
   );
 }
 
-export default function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const progress = getOverallProgress(CURRICULUM);
+export default function Sidebar({ isOpen, onClose, curriculum, skillName }: SidebarProps) {
+  const progress = getOverallProgress(curriculum);
 
   return (
     <>
@@ -118,7 +118,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex items-center justify-between pt-2 pb-1">
           <div>
             <h2 className="text-sm font-bold text-white">Your Curriculum</h2>
-            <p className="text-[11px] text-white/30 mt-0.5">Web Design Mastery</p>
+            <p className="text-[11px] text-white/30 mt-0.5">{skillName}</p>
           </div>
           {/* Mobile close button */}
           <button
@@ -144,8 +144,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             />
           </div>
           <p className="text-[10px] text-white/20">
-            {CURRICULUM.flatMap((m) => m.lessons).filter((l) => l.status === "completed").length} of{" "}
-            {CURRICULUM.flatMap((m) => m.lessons).length} lessons complete
+            {curriculum.flatMap((m) => m.lessons).filter((l) => l.status === "completed").length} of{" "}
+            {curriculum.flatMap((m) => m.lessons).length} lessons complete
           </p>
         </div>
 
@@ -154,7 +154,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Module list */}
         <div className="flex flex-col gap-2 overflow-y-auto flex-1 pr-0.5 scrollbar-thin">
-          {CURRICULUM.map((module) => (
+          {curriculum.map((module) => (
             <ModuleAccordion key={module.id} module={module} />
           ))}
         </div>
@@ -166,7 +166,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <span className="text-xs font-bold text-white">Certificate in progress</span>
           </div>
           <p className="text-[10px] text-white/30 leading-relaxed">
-            Complete all modules to earn your verifiable Web Design certificate.
+            Complete all modules to earn your verifiable {skillName.replace(" Mastery", "").replace(" Blueprint", "")} certificate.
           </p>
           <div className="w-full h-1 rounded-full bg-white/5 overflow-hidden">
             <div className="h-full rounded-full bg-neon/40" style={{ width: `${progress}%` }} />

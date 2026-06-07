@@ -6,8 +6,9 @@
 //   - Pass full message history as context (trim to last N tokens for context window)
 //   - For long-term memory: use RAG with Pinecone/pgvector to retrieve relevant past messages
 
-import { useState, useCallback, useRef } from "react";
-import { Message, INITIAL_MESSAGES, AI_REPLIES } from "@/lib/mockData";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Message } from "@/lib/mockData";
+import { SKILLS_DATA } from "@/lib/skillsData";
 
 interface UseChatReturn {
   messages: Message[];
@@ -17,22 +18,30 @@ interface UseChatReturn {
   dismissAchievement: () => void;
 }
 
-export function useChat(): UseChatReturn {
-  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
+export function useChat(skillId: string): UseChatReturn {
+  const activeSkill = SKILLS_DATA.find((s) => s.id === skillId) || SKILLS_DATA[0];
+
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [showAchievement, setShowAchievement] = useState(false);
   const userMessageCount = useRef(0);
   const replyIndex = useRef(0);
 
+  // Sync state if activeSkill changes
+  useEffect(() => {
+    setMessages(activeSkill.initialMessages);
+    userMessageCount.current = 0;
+    replyIndex.current = 0;
+    setShowAchievement(false);
+  }, [activeSkill]);
+
   const simulateAIReply = useCallback((currentCount: number) => {
-    // FUTURE HOOK: Replace this entire function with a fetch() call to your API route
-    //   which calls the Hugging Face Inference API with the full message history
     setIsTyping(true);
 
     const delay = 800 + Math.random() * 800; // 0.8s–1.6s typing feel
 
     setTimeout(() => {
-      const reply = AI_REPLIES[replyIndex.current % AI_REPLIES.length];
+      const reply = activeSkill.replies[replyIndex.current % activeSkill.replies.length];
       replyIndex.current += 1;
 
       const aiMessage: Message = {
@@ -50,7 +59,7 @@ export function useChat(): UseChatReturn {
         setTimeout(() => setShowAchievement(true), 500);
       }
     }, delay);
-  }, []);
+  }, [activeSkill]);
 
   const sendMessage = useCallback(
     (text: string) => {
@@ -78,3 +87,4 @@ export function useChat(): UseChatReturn {
 
   return { messages, isTyping, sendMessage, showAchievement, dismissAchievement };
 }
+

@@ -1,20 +1,27 @@
 "use client";
 
-// ============================================================
-// Classroom Page — /classroom
-// ============================================================
-
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Sidebar from "@/components/classroom/Sidebar";
 import ChatWindow from "@/components/classroom/ChatWindow";
 import InputArea from "@/components/classroom/InputArea";
 import AchievementToast from "@/components/classroom/AchievementToast";
 import { useChat } from "@/hooks/useChat";
+import { SKILLS_DATA } from "@/lib/skillsData";
 
-export default function ClassroomPage() {
+function ClassroomContent() {
+  const searchParams = useSearchParams();
+  const skillId = searchParams.get("skill") || "web-design";
+  const activeSkill = SKILLS_DATA.find((s) => s.id === skillId) || SKILLS_DATA[0];
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { messages, isTyping, sendMessage, showAchievement, dismissAchievement } = useChat();
+  const { messages, isTyping, sendMessage, showAchievement, dismissAchievement } = useChat(activeSkill.id);
+
+  // Get current active lesson or fall back to skill name
+  const activeLesson = activeSkill.curriculum
+    .flatMap((m) => m.lessons)
+    .find((l) => l.status === "active")?.title || activeSkill.name;
 
   return (
     <div className="h-screen flex flex-col bg-[#0a0a0a] overflow-hidden">
@@ -46,7 +53,7 @@ export default function ClassroomPage() {
         {/* Module context */}
         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neon/5 border border-neon/15">
           <span className="w-1.5 h-1.5 rounded-full bg-neon animate-pulse" />
-          <span className="text-xs text-neon/80 font-medium">CSS Grid & Flexbox</span>
+          <span className="text-xs text-neon/80 font-medium">{activeLesson}</span>
         </div>
 
         {/* Right actions */}
@@ -66,7 +73,12 @@ export default function ClassroomPage() {
       {/* ── Main Layout ── */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          curriculum={activeSkill.curriculum}
+          skillName={activeSkill.name}
+        />
 
         {/* Chat Area */}
         <div className="flex flex-col flex-1 overflow-hidden">
@@ -75,8 +87,8 @@ export default function ClassroomPage() {
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-neon animate-pulse" />
               <div>
-                <p className="text-xs font-semibold text-white">AI Mentor</p>
-                <p className="text-[10px] text-white/30">Active · CSS Grid & Flexbox</p>
+                <p className="text-xs font-semibold text-white">AI Mentor ({activeSkill.emoji})</p>
+                <p className="text-[10px] text-white/30">Active · {activeLesson}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-white/20">
@@ -100,8 +112,25 @@ export default function ClassroomPage() {
         show={showAchievement}
         onDismiss={dismissAchievement}
         title="Skill Verified"
-        subtitle="CSS Grid Fundamentals"
+        subtitle={activeLesson}
       />
     </div>
+  );
+}
+
+export default function ClassroomPage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen flex items-center justify-center bg-[#0a0a0a] text-white">
+        <div className="flex flex-col items-center gap-4 animate-pulse">
+          <div className="relative flex items-center justify-center w-12 h-12 rounded-lg bg-neon/10 border border-neon/30">
+            <span className="text-neon font-black text-lg">AU</span>
+          </div>
+          <span className="text-xs font-bold tracking-widest uppercase text-neon">Configuring Mentor...</span>
+        </div>
+      </div>
+    }>
+      <ClassroomContent />
+    </Suspense>
   );
 }
