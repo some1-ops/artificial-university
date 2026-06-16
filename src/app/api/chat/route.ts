@@ -42,7 +42,7 @@ Guidelines:
 
     for (let i = 0; i < retries; i++) {
       response = await fetch(
-        "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct/v1/chat/completions",
+        "https://api-inference.huggingface.co/v1/chat/completions",
         {
           method: "POST",
           headers: {
