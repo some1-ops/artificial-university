@@ -2,7 +2,7 @@
 
 // ============================================================
 // FUTURE HOOK: Replace simulateAIReply with Hugging Face Inference API
-//   - POST to: https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2
+//   - POST to: https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct
 //   - Pass full message history as context (trim to last N tokens for context window)
 //   - For long-term memory: use RAG with Pinecone/pgvector to retrieve relevant past messages
 

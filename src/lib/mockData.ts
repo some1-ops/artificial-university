@@ -2,7 +2,7 @@
 // mockData.ts — Static data for Artificial University MVP
 // ============================================================
 // FUTURE HOOK: Replace INITIAL_MESSAGES with Hugging Face Inference API
-//   - Recommended models: Mistral-7B-Instruct, Llama-3-8B
+//   - Recommended models: Qwen/Qwen2.5-7B-Instruct, Llama-3-8B
 //   - Use RAG + Pinecone / Supabase pgvector for persistent chat memory
 //
 // FUTURE HOOK: Replace CURRICULUM with Agent 1 (Curriculum Architect)
@@ -70,7 +70,7 @@ export const INITIAL_MESSAGES: Message[] = [
 
 // ─── AI Reply Pool ─────────────────────────────────────────────
 // FUTURE HOOK: Replace with Hugging Face API call
-//   endpoint: https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2
+//   endpoint: https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct
 export const AI_REPLIES: string[] = [
   "Good question! Let's break that down further. Think of `grid-template-areas` as labeling zones on your grid — like naming rooms in a house. 🏠",
   "You're getting it fast! Now try this: what would happen if we changed `1fr` to `2fr` in a 3-column grid? Take a guess — no wrong answers.",

@@ -45,7 +45,7 @@ Guidelines:
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          model: "mistralai/Mistral-7B-Instruct-v0.2",
+          model: "Qwen/Qwen2.5-7B-Instruct",
           messages: hfMessages,
           max_tokens: 800,   // Increased from 500 to allow richer, multi-paragraph responses
           temperature: 0.75, // Slightly more expressive for the "bro" persona
