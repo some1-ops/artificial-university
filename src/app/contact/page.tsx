@@ -97,7 +97,7 @@ export default function ContactPage() {
                       href="mailto:reach.agtech@gmail.com"
                       className="text-neon text-xs font-semibold hover:underline"
                     >
-                      support@artificial.university
+                      reach.agtech@gmail.com
                     </a>
                   </div>
                 </div>

@@ -25,15 +25,15 @@ export default function Home() {
               aria-hidden={clone === 1}
             >
               {[
+                "Forex Trading",
                 "Web Design",
+                "AI OFM",
                 "Dropshipping",
+                "YouTube Automation",
                 "AI Integration",
-                "Online Marketing",
                 "Copywriting",
-                "E-Commerce",
-                "SEO",
+                "Growth Marketing",
                 "Brand Strategy",
-                "Social Media",
                 "Sales Funnels",
               ].map((skill) => (
                 <div key={skill} className="flex items-center gap-3 whitespace-nowrap">

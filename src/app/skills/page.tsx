@@ -15,7 +15,7 @@ export default function SkillsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [activeModalSkill, setActiveModalSkill] = useState<Skill | null>(null);
 
-  const categories = ["All", "Development", "Business", "Automation", "Marketing", "Writing"];
+  const categories = ["All", "Finance", "Creator", "Development", "Business", "Automation", "Marketing", "Writing"];
 
   // Filter skills based on category and search query
   const filteredSkills = SKILLS_DATA.filter((skill) => {

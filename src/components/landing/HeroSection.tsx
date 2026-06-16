@@ -7,7 +7,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const ROTATING_SKILLS = ["Web Design", "Dropshipping", "AI Integration", "Online Marketing", "Copywriting", "E-Commerce"];
+const ROTATING_SKILLS = ["Forex Trading", "Web Design", "AI OFM", "Dropshipping", "YouTube Automation", "AI Integration", "Copywriting", "Growth Marketing"];
 
 export default function HeroSection() {
   const [skillIndex, setSkillIndex] = useState(0);

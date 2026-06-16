@@ -15,19 +15,22 @@ export async function POST(request: Request) {
       );
     }
 
-    // Build the skill-specific system prompt
-    const systemPrompt = `You are a direct, encouraging AI Mentor teaching "${activeSkill.name}".
-Your persona: Talk in a casual, conversational, and direct texting style (like a supportive friend or peer who is an expert). Avoid dry academic lectures, walls of text, and formal numbered lists.
+    // Use the skill's hardcoded system prompt (locks AI inside the proprietary curriculum).
+    // Falls back to a generic mentor prompt if a skill somehow lacks one.
+    const systemPrompt =
+      activeSkill.systemPrompt ||
+      `You are a direct, encouraging AI Mentor teaching "${activeSkill.name}".
+Your persona: Talk in a casual, conversational, and direct style (like a supportive peer who is an expert). Avoid dry academic lectures, walls of text, and formal numbered lists.
 Guidelines:
 1. Keep replies concise, punchy, and split into small paragraphs.
 2. Use markdown formatting (bold, italic) and write clean code blocks for examples.
-3. Keep the user engaged by checking their understanding and asking one relevant question at the end of your response.
+3. Keep the user engaged by checking their understanding and asking one relevant question at the end.
 4. Integrate emojis naturally.`;
 
-    // Map messages: system prompt, followed by user/assistant role mapping
+    // Build the HF messages array: system prompt first, then full conversation history
     const hfMessages = [
       { role: "system", content: systemPrompt },
-      ...messages.map((m: any) => ({
+      ...messages.map((m: { role: string; content: string }) => ({
         role: m.role === "user" ? "user" : "assistant",
         content: m.content,
       })),
@@ -44,8 +47,8 @@ Guidelines:
         body: JSON.stringify({
           model: "mistralai/Mistral-7B-Instruct-v0.2",
           messages: hfMessages,
-          max_tokens: 500,
-          temperature: 0.7,
+          max_tokens: 800,   // Increased from 500 to allow richer, multi-paragraph responses
+          temperature: 0.75, // Slightly more expressive for the "bro" persona
         }),
       }
     );
@@ -62,10 +65,11 @@ Guidelines:
     const replyText = data.choices?.[0]?.message?.content || "";
 
     return NextResponse.json({ reply: replyText });
-  } catch (error: any) {
-    console.error("Chat API error:", error);
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error("Chat API error:", err);
     return NextResponse.json(
-      { error: "INTERNAL_SERVER_ERROR", message: error.message },
+      { error: "INTERNAL_SERVER_ERROR", message: err.message },
       { status: 500 }
     );
   }
