@@ -66,7 +66,8 @@ export function useChat(skillId: string): UseChatReturn {
         });
 
         if (!response.ok) {
-          throw new Error("AI Endpoint returned an error response");
+          const errData = await response.json().catch(() => null);
+          throw new Error(errData?.message || `HTTP ${response.status}`);
         }
 
         const data = await response.json();
@@ -93,10 +94,12 @@ export function useChat(skillId: string): UseChatReturn {
       } catch (error) {
         console.warn("API failure, inserting error message:", error);
         
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        
         const aiMessage: Message = {
           id: `msg-ai-${Date.now()}`,
           role: "ai",
-          content: "Sorry, my brain seems to be disconnected right now. Could you please try sending that again?",
+          content: `Sorry, my brain seems to be disconnected right now. (Error: ${errorMessage}). Could you please try sending that again?`,
           timestamp: new Date(),
         };
 
