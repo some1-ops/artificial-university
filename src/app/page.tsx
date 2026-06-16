@@ -58,7 +58,7 @@ export default function Home() {
           </p>
         </div>
         <a
-          href="/classroom"
+          href="/skills"
           id="bottom-cta"
           className="px-8 py-4 rounded-xl bg-neon text-black font-black text-base tracking-tight transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(57,255,20,0.5)] active:scale-100"
         >

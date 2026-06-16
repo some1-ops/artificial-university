@@ -36,28 +36,42 @@ Guidelines:
       })),
     ];
 
-    const response = await fetch(
-      "https://api-inference.huggingface.co/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          model: "Qwen/Qwen2.5-7B-Instruct",
-          messages: hfMessages,
-          max_tokens: 800,   // Increased from 500 to allow richer, multi-paragraph responses
-          temperature: 0.75, // Slightly more expressive for the "bro" persona
-        }),
-      }
-    );
+    let response;
+    let retries = 3;
+    let delay = 3000;
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    for (let i = 0; i < retries; i++) {
+      response = await fetch(
+        "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            model: "Qwen/Qwen2.5-7B-Instruct",
+            messages: hfMessages,
+            max_tokens: 800,   // Increased from 500 to allow richer, multi-paragraph responses
+            temperature: 0.75, // Slightly more expressive for the "bro" persona
+          }),
+        }
+      );
+
+      if (response.status === 503) {
+        console.log(`Model is loading (503). Retrying in ${delay / 1000} seconds... (${i + 1}/${retries})`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay += 2000; // Exponential-ish backoff
+      } else {
+        break;
+      }
+    }
+
+    if (!response || !response.ok) {
+      const errorData = response ? await response.json().catch(() => ({})) : {};
       return NextResponse.json(
         { error: "HF_API_ERROR", message: errorData.error || "Failed to query Hugging Face API" },
-        { status: response.status }
+        { status: response ? response.status : 500 }
       );
     }
 

@@ -74,7 +74,7 @@ export default function HeroSection() {
       {/* CTA */}
       <div className="relative z-10 mt-10 flex flex-col sm:flex-row items-center gap-4 animate-fade-up [animation-delay:0.35s]">
         <Link
-          href="/classroom"
+          href="/skills"
           id="hero-cta-primary"
           className="group relative px-8 py-4 rounded-xl bg-neon text-black font-black text-base tracking-tight transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(57,255,20,0.6),0_0_80px_rgba(57,255,20,0.2)] active:scale-100"
         >

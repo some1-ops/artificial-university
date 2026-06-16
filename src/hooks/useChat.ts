@@ -16,7 +16,6 @@ interface UseChatReturn {
   sendMessage: (text: string) => void;
   showAchievement: boolean;
   dismissAchievement: () => void;
-  isDemoMode: boolean;
 }
 
 export function useChat(skillId: string): UseChatReturn {
@@ -25,44 +24,13 @@ export function useChat(skillId: string): UseChatReturn {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [showAchievement, setShowAchievement] = useState(false);
-  const [isDemoMode, setIsDemoMode] = useState(false);
-
   const userMessageCount = useRef(0);
-  const replyIndex = useRef(0);
 
   // Sync state if activeSkill changes
   useEffect(() => {
     setMessages(activeSkill.initialMessages);
     userMessageCount.current = 0;
-    replyIndex.current = 0;
     setShowAchievement(false);
-  }, [activeSkill]);
-
-  const simulateAIReply = useCallback((currentCount: number) => {
-    setIsTyping(true);
-    setIsDemoMode(true);
-
-    const delay = 800 + Math.random() * 800; // 0.8s–1.6s typing feel
-
-    setTimeout(() => {
-      const reply = activeSkill.replies[replyIndex.current % activeSkill.replies.length];
-      replyIndex.current += 1;
-
-      const aiMessage: Message = {
-        id: `msg-ai-${Date.now()}`,
-        role: "ai",
-        content: reply,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsTyping(false);
-
-      // Trigger achievement toast after the user's 2nd message exchange
-      if (currentCount === 2) {
-        setTimeout(() => setShowAchievement(true), 500);
-      }
-    }, delay);
   }, [activeSkill]);
 
   const sendMessage = useCallback(
@@ -116,7 +84,6 @@ export function useChat(skillId: string): UseChatReturn {
 
         setMessages((prev) => [...prev, aiMessage]);
         setIsTyping(false);
-        setIsDemoMode(false);
 
         // Trigger achievement toast after the user's 2nd message exchange
         if (currentCount === 2) {
@@ -124,17 +91,26 @@ export function useChat(skillId: string): UseChatReturn {
         }
 
       } catch (error) {
-        console.warn("API failure, falling back to simulated reply:", error);
-        simulateAIReply(currentCount);
+        console.warn("API failure, inserting error message:", error);
+        
+        const aiMessage: Message = {
+          id: `msg-ai-${Date.now()}`,
+          role: "ai",
+          content: "Sorry, my brain seems to be disconnected right now. Could you please try sending that again?",
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, aiMessage]);
+        setIsTyping(false);
       }
     },
-    [messages, activeSkill, simulateAIReply]
+    [messages, activeSkill]
   );
 
   const dismissAchievement = useCallback(() => {
     setShowAchievement(false);
   }, []);
 
-  return { messages, isTyping, sendMessage, showAchievement, dismissAchievement, isDemoMode };
+  return { messages, isTyping, sendMessage, showAchievement, dismissAchievement };
 }
 
