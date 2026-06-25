@@ -46,7 +46,7 @@ export default function HowItWorksSection() {
     <section id="how-it-works" className="relative py-24 md:py-32 px-6">
       {/* Section label */}
       <div className="flex justify-center mb-6">
-        <span className="px-3 py-1 rounded-full text-xs font-semibold tracking-widest uppercase text-neon bg-neon/10 border border-neon/20">
+        <span className="px-3 py-1 rounded-full text-xs font-semibold tracking-widest uppercase text-cyan-400 bg-cyan-500/10 border border-cyan-500/20">
           How It Works
         </span>
       </div>
@@ -54,7 +54,7 @@ export default function HowItWorksSection() {
       {/* Section heading */}
       <h2 className="text-center text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4">
         Three Steps to a{" "}
-        <span className="text-neon [text-shadow:0_0_20px_rgba(57,255,20,0.4)]">High-Income Skill</span>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500 animate-gradient-x bg-[length:200%_auto]">High-Income Skill</span>
       </h2>
       <p className="text-center text-white/40 max-w-xl mx-auto mb-16 text-base leading-relaxed">
         We stripped away everything traditional education gets wrong and kept only what actually gets you earning.
@@ -65,7 +65,7 @@ export default function HowItWorksSection() {
         {steps.map((step, index) => (
           <div
             key={step.number}
-            className="group relative flex flex-col gap-5 p-7 rounded-2xl bg-white/[0.03] border border-white/8 hover:border-neon/30 hover:bg-white/[0.05] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(57,255,20,0.08)]"
+            className="group relative flex flex-col gap-5 p-7 rounded-2xl glass-panel hover:bg-white/[0.05] transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-md"
           >
             {/* Step number background */}
             <div className="absolute top-5 right-5 text-[60px] font-black text-white/[0.04] leading-none select-none">
@@ -73,12 +73,12 @@ export default function HowItWorksSection() {
             </div>
 
             {/* Icon */}
-            <div className="relative w-12 h-12 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center text-neon transition-all duration-300 group-hover:bg-neon/20 group-hover:shadow-[0_0_20px_rgba(57,255,20,0.2)]">
+            <div className="relative w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 transition-all duration-300 group-hover:bg-cyan-500/20 group-hover:shadow-[0_0_20px_rgba(0,240,255,0.2)]">
               {step.icon}
             </div>
 
             {/* Badge */}
-            <span className="inline-block w-fit px-2 py-0.5 rounded-md text-[10px] font-bold tracking-widest uppercase bg-neon/10 text-neon/70 border border-neon/10">
+            <span className="inline-block w-fit px-2 py-0.5 rounded-md text-[10px] font-bold tracking-widest uppercase bg-violet-500/10 text-violet-400 border border-violet-500/20">
               {step.badge}
             </span>
 
@@ -90,7 +90,7 @@ export default function HowItWorksSection() {
 
             {/* Connector arrow (between cards on desktop) */}
             {index < steps.length - 1 && (
-              <div className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 z-10 text-neon/30 text-xl">
+              <div className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 z-10 text-cyan-400/30 text-xl">
                 →
               </div>
             )}

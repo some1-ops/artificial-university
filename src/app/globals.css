@@ -1,62 +1,65 @@
-/* ─── Google Font: Inter (must be first @import) ─────────────── */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
-
 @import "tailwindcss";
 
 /* ─── CSS Custom Properties ──────────────────────────────────── */
 :root {
-  --background: #0a0a0a;
-  --foreground: #f5f5f5;
-  --neon: #39ff14;
-  --neon-dim: rgba(57, 255, 20, 0.15);
+  --background: #050505;
+  --foreground: #f8fafc;
+  --cyan: #00f0ff;
+  --violet: #8a2be2;
+  --cyan-dim: rgba(0, 240, 255, 0.15);
+  --violet-dim: rgba(138, 43, 226, 0.15);
 }
 
 /* ─── Tailwind v4: Custom Theme Tokens ───────────────────────── */
 @theme inline {
   /* Colors */
-  --color-neon: #39ff14;
-  --color-surface: #111111;
-  --color-surface-raised: #161616;
-  --color-surface-overlay: #1c1c1c;
+  --color-cyan: #00f0ff;
+  --color-violet: #8a2be2;
+  --color-neon: #00f0ff; /* Keep neon variable to avoid breaking old components immediately, map to cyan */
+  --color-surface: #0a0a0c;
+  --color-surface-raised: #121217;
+  --color-surface-overlay: #1a1a24;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
   /* Font family */
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-outfit), system-ui, -apple-system, sans-serif;
 
   /* Box shadows */
-  --shadow-neon-sm: 0 0 10px rgba(57, 255, 20, 0.3);
-  --shadow-neon-md: 0 0 20px rgba(57, 255, 20, 0.4);
-  --shadow-neon-lg: 0 0 40px rgba(57, 255, 20, 0.5), 0 0 80px rgba(57, 255, 20, 0.2);
-  --shadow-neon-glow: 0 0 30px rgba(57, 255, 20, 0.2), 0 0 60px rgba(57, 255, 20, 0.08);
+  --shadow-cyan-sm: 0 0 10px rgba(0, 240, 255, 0.3);
+  --shadow-cyan-md: 0 0 20px rgba(0, 240, 255, 0.4);
+  --shadow-cyan-lg: 0 0 40px rgba(0, 240, 255, 0.5), 0 0 80px rgba(0, 240, 255, 0.2);
+  --shadow-violet-glow: 0 0 30px rgba(138, 43, 226, 0.3), 0 0 60px rgba(138, 43, 226, 0.15);
+  --shadow-neon-glow: var(--shadow-cyan-lg); /* Fallback */
 
   /* Animations */
-  --animate-fade-up: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-up: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-pulse-slow: pulseSlow 4s ease-in-out infinite;
-  --animate-ping-slow: pingSlow 2s ease-out infinite;
-  --animate-bounce-slow: bounceSlow 2s ease-in-out infinite;
-  --animate-marquee: marquee 25s linear infinite;
-  --animate-slide-in-right: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-ping-slow: pingSlow 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-bounce-slow: bounceSlow 3s ease-in-out infinite;
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-slide-in-right: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-shrink-width: shrinkWidth linear both;
-  --animate-page-in: pageFadeIn 0.4s ease both;
+  --animate-page-in: pageFadeIn 0.5s ease both;
+  --animate-gradient-x: gradientX 5s ease infinite;
+  --animate-float: float 6s ease-in-out infinite;
 
   /* Keyframes */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
   }
   @keyframes pulseSlow {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 0.7; }
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.05); }
   }
   @keyframes pingSlow {
     0% { transform: scale(1); opacity: 0.8; }
-    70% { transform: scale(2); opacity: 0; }
-    100% { transform: scale(1); opacity: 0; }
+    80%, 100% { transform: scale(2.5); opacity: 0; }
   }
   @keyframes bounceSlow {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+    50% { transform: translateY(-8px); }
   }
   @keyframes marquee {
     from { transform: translateX(0); }
@@ -74,6 +77,14 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
+  @keyframes gradientX {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
 }
 
 /* ─── Base Reset ─────────────────────────────────────────────── */
@@ -90,30 +101,53 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
+/* ─── Utilities for Gradient Text & Borders ───────────────────── */
+.text-gradient {
+  background: linear-gradient(to right, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-mesh {
+  background-image: 
+    radial-gradient(at 40% 20%, rgba(0, 240, 255, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(138, 43, 226, 0.15) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(0, 240, 255, 0.1) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(138, 43, 226, 0.1) 0px, transparent 50%);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 /* ─── Selection Color ────────────────────────────────────────── */
 ::selection {
-  background-color: rgba(57, 255, 20, 0.25);
+  background-color: rgba(0, 240, 255, 0.3);
   color: #fff;
 }
 
 /* ─── Scrollbar Styling ──────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 100px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(57, 255, 20, 0.25);
+  background: rgba(0, 240, 255, 0.4);
 }

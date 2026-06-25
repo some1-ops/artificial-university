@@ -24,7 +24,7 @@ function ClassroomContent() {
     .find((l) => l.status === "active")?.title || activeSkill.name;
 
   return (
-    <div className="h-screen flex flex-col bg-[#0a0a0a] overflow-hidden">
+    <div className="h-screen flex flex-col bg-[#050505] overflow-hidden">
       {/* ── Top Bar ── */}
       <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-6 h-14 border-b border-white/5 bg-[#0d0d0d]/80 backdrop-blur-md z-20">
         <div className="flex items-center gap-3">
@@ -41,8 +41,8 @@ function ClassroomContent() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-6 h-6 rounded-md bg-neon/10 border border-neon/30 flex items-center justify-center transition-all duration-200 group-hover:border-neon/50">
-              <span className="text-neon font-black text-[10px]">AU</span>
+            <div className="w-6 h-6 rounded-md bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center transition-all duration-200 group-hover:border-cyan-500/50">
+              <span className="text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-violet-500 font-black text-[10px]">AU</span>
             </div>
             <span className="text-white/60 text-sm font-medium hidden sm:block group-hover:text-white transition-colors">
               artificial university
@@ -59,9 +59,9 @@ function ClassroomContent() {
         </div>
 
         {/* Module context */}
-        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neon/5 border border-neon/15">
-          <span className="w-1.5 h-1.5 rounded-full bg-neon animate-pulse" />
-          <span className="text-xs text-neon/80 font-medium">{activeLesson}</span>
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyan-500/5 border border-cyan-500/15">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          <span className="text-xs text-cyan-400/80 font-medium">{activeLesson}</span>
         </div>
 
         {/* Right actions */}
@@ -72,7 +72,7 @@ function ClassroomContent() {
             </svg>
             Progress
           </button>
-          <div className="w-7 h-7 rounded-full bg-neon/10 border border-neon/30 flex items-center justify-center text-xs font-bold text-neon">
+          <div className="w-7 h-7 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-xs font-bold text-cyan-400">
             U
           </div>
         </div>
@@ -93,7 +93,7 @@ function ClassroomContent() {
           {/* Chat header context bar */}
           <div className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 py-3 border-b border-white/5">
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-neon animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
               <div>
                 <p className="text-xs font-semibold text-white">AI Mentor ({activeSkill.emoji})</p>
                 <p className="text-[10px] text-white/30">Active · {activeLesson}</p>
@@ -131,12 +131,12 @@ function ClassroomContent() {
 export default function ClassroomPage() {
   return (
     <Suspense fallback={
-      <div className="h-screen flex items-center justify-center bg-[#0a0a0a] text-white">
+      <div className="h-screen flex items-center justify-center bg-[#050505] text-white">
         <div className="flex flex-col items-center gap-4 animate-pulse">
-          <div className="relative flex items-center justify-center w-12 h-12 rounded-lg bg-neon/10 border border-neon/30">
-            <span className="text-neon font-black text-lg">AU</span>
+          <div className="relative flex items-center justify-center w-12 h-12 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+            <span className="text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-violet-500 font-black text-lg">AU</span>
           </div>
-          <span className="text-xs font-bold tracking-widest uppercase text-neon">Configuring Mentor...</span>
+          <span className="text-xs font-bold tracking-widest uppercase text-cyan-400">Configuring Mentor...</span>
         </div>
       </div>
     }>

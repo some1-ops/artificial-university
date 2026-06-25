@@ -54,12 +54,12 @@ export default function InputArea({ onSend, disabled }: InputAreaProps) {
   };
 
   return (
-    <div className="flex-shrink-0 px-4 md:px-8 py-4 border-t border-white/5 bg-[#0a0a0a]">
+    <div className="flex-shrink-0 px-4 md:px-8 py-4 border-t border-white/5 bg-[#050505]">
       <div
         className={`flex items-end gap-3 p-3 rounded-2xl bg-[#161616] border transition-all duration-200 ${
           disabled
             ? "border-white/5 opacity-60"
-            : "border-white/10 focus-within:border-neon/40 focus-within:shadow-[0_0_20px_rgba(57,255,20,0.08)]"
+            : "border-white/10 focus-within:border-cyan-500/40 focus-within:shadow-[0_0_20px_rgba(0,240,255,0.15)]"
         }`}
       >
         {/* Textarea */}
@@ -91,7 +91,7 @@ export default function InputArea({ onSend, disabled }: InputAreaProps) {
           id="chat-send-btn"
           className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 ${
             value.trim() && !disabled
-              ? "bg-neon text-black hover:scale-105 hover:shadow-[0_0_16px_rgba(57,255,20,0.5)] active:scale-95"
+              ? "bg-gradient-to-r from-cyan-500 to-violet-600 text-white hover:scale-105 hover:shadow-[0_0_16px_rgba(0,240,255,0.5)] active:scale-95"
               : "bg-white/5 text-white/20 cursor-not-allowed"
           }`}
         >

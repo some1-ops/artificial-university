@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-outfit",
   display: "swap",
 });
 
@@ -27,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} scroll-smooth`}>
-      <body className="bg-[#0a0a0a] text-white antialiased font-sans">
+    <html lang="en" className={`${outfit.variable} scroll-smooth`}>
+      <body className="bg-[#050505] text-white antialiased font-sans selection:bg-cyan-500/30 selection:text-cyan-50">
         {children}
       </body>
     </html>

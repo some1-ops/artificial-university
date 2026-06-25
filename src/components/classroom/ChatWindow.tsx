@@ -16,7 +16,7 @@ interface ChatWindowProps {
 function TypingIndicator() {
   return (
     <div className="flex items-end gap-2.5">
-      <div className="w-7 h-7 rounded-full bg-[#1a1a1a] border border-white/10 flex items-center justify-center text-xs font-bold text-neon flex-shrink-0">
+      <div className="w-7 h-7 rounded-full bg-[#1a1a1a] border border-white/10 flex items-center justify-center text-xs font-bold text-cyan-400 flex-shrink-0">
         AI
       </div>
       <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-[#1c1c1c] border border-white/5 flex items-center gap-1.5">

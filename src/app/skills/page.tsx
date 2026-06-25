@@ -28,21 +28,22 @@ export default function SkillsPage() {
   });
 
   return (
-    <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
+    <main className="min-h-screen flex flex-col bg-[#050505] text-white">
       <Navbar />
 
       {/* Hero section */}
       <section className="relative pt-32 pb-16 px-6 overflow-hidden">
         {/* Background glow */}
-        <div className="absolute top-12 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-neon/5 blur-3xl pointer-events-none" />
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-violet-600/10 blur-[100px] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-mesh opacity-50 mix-blend-screen pointer-events-none" />
         
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-6 relative z-10">
-          <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase text-neon bg-neon/10 border border-neon/20 animate-fade-up">
+          <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 animate-fade-up">
             High-Income Skill Sets
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-white animate-fade-up [animation-delay:0.1s]">
             Skip the Lectures. <br />
-            <span className="text-neon [text-shadow:0_0_20px_rgba(57,255,20,0.4)]">Pick Your System.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500 animate-gradient-x bg-[length:200%_auto]">Pick Your System.</span>
           </h1>
           <p className="text-white/40 max-w-xl text-sm md:text-base leading-relaxed animate-fade-up [animation-delay:0.2s]">
             These are not academic courses. They are practical, step-by-step systems designed to get you from $0 to $10k/month. Select a skill to configure your AI mentor.
@@ -63,7 +64,7 @@ export default function SkillsPage() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 whitespace-nowrap cursor-pointer hover:scale-[1.02] active:scale-100 ${
                   selectedCategory === category
-                    ? "bg-neon text-black font-black shadow-[0_0_20px_rgba(57,255,20,0.3)]"
+                    ? "bg-cyan-500 text-black font-black shadow-[0_0_20px_rgba(0,240,255,0.3)]"
                     : "bg-white/5 text-white/50 border border-white/5 hover:text-white hover:bg-white/10"
                 }`}
               >
@@ -79,7 +80,7 @@ export default function SkillsPage() {
               placeholder="Search high-income skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon/50 focus:shadow-[0_0_15px_rgba(57,255,20,0.15)] transition-all duration-300"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-500/50 focus:shadow-[0_0_15px_rgba(0,240,255,0.15)] transition-all duration-300"
             />
             <svg
               className="absolute left-3.5 top-3.5 w-4 h-4 text-white/30"
@@ -118,14 +119,14 @@ export default function SkillsPage() {
           {filteredSkills.map((skill, index) => (
             <div
               key={skill.id}
-              className="group relative flex flex-col justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/8 hover:border-neon/30 hover:bg-white/[0.04] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(57,255,20,0.05)]"
+              className="group relative flex flex-col justify-between p-6 rounded-2xl glass-panel hover:border-cyan-500/50 hover:bg-white/[0.04] transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-md overflow-hidden"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               {/* Top Section */}
               <div>
                 <div className="flex justify-between items-start mb-4">
                   {/* Icon */}
-                  <div className="w-12 h-12 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center text-2xl text-neon transition-all duration-300 group-hover:bg-neon/20">
+                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-2xl text-cyan-400 transition-all duration-300 group-hover:bg-cyan-500/20">
                     {skill.emoji}
                   </div>
                   {/* Category Tag */}
@@ -134,7 +135,7 @@ export default function SkillsPage() {
                   </span>
                 </div>
 
-                <h2 className="text-xl font-bold text-white mb-2 leading-tight group-hover:text-neon transition-colors duration-300">
+                <h2 className="text-xl font-bold text-white mb-2 leading-tight group-hover:text-cyan-400 transition-colors duration-300">
                   {skill.name}
                 </h2>
                 
@@ -146,7 +147,7 @@ export default function SkillsPage() {
                 <div className="grid grid-cols-2 gap-4 py-4 border-y border-white/5 mb-6 text-xs">
                   <div>
                     <span className="block text-white/20 text-[10px] uppercase font-bold tracking-wider">Salary Potential</span>
-                    <span className="text-neon font-bold mt-0.5 block">{skill.salaryPotential}</span>
+                    <span className="text-cyan-400 font-bold mt-0.5 block">{skill.salaryPotential}</span>
                   </div>
                   <div>
                     <span className="block text-white/20 text-[10px] uppercase font-bold tracking-wider">Duration</span>
@@ -159,17 +160,18 @@ export default function SkillsPage() {
               <div className="flex flex-col gap-3 mt-auto">
                 <button
                   onClick={() => setActiveModalSkill(skill)}
-                  className="w-full py-2.5 rounded-xl text-xs font-semibold text-white/60 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition-all duration-200 cursor-pointer"
+                  className="w-full py-2.5 rounded-xl text-xs font-semibold text-white/60 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition-all duration-200 cursor-pointer relative z-10"
                 >
                   View Syllabus Outline
                 </button>
                 <Link
                   href={`/classroom?skill=${skill.id}`}
-                  className="w-full py-3 rounded-xl bg-neon/10 group-hover:bg-neon text-neon group-hover:text-black font-black text-xs text-center border border-neon/30 group-hover:border-neon transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(57,255,20,0.3)] active:scale-[0.98]"
+                  className="w-full py-3 rounded-xl bg-cyan-500/10 group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-violet-600 text-cyan-400 group-hover:text-white font-black text-xs text-center border border-cyan-500/30 group-hover:border-transparent transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(0,240,255,0.4)] active:scale-[0.98] relative z-10"
                 >
                   Configure AI Mentor
                 </Link>
               </div>
+              <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/0 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             </div>
           ))}
         </div>
@@ -185,14 +187,14 @@ export default function SkillsPage() {
           />
           
           {/* Modal Content */}
-          <div className="relative w-full max-w-2xl bg-[#0d0d0d] border border-white/10 rounded-2xl overflow-hidden shadow-[0_12px_50px_rgba(0,0,0,0.8)] flex flex-col max-h-[85vh] animate-fade-up">
+          <div className="relative w-full max-w-2xl glass-panel bg-[#050505]/90 rounded-2xl overflow-hidden shadow-[0_12px_50px_rgba(0,0,0,0.8)] flex flex-col max-h-[85vh] animate-fade-up border border-cyan-500/20">
             {/* Header */}
             <div className="p-6 border-b border-white/5 flex items-start justify-between">
               <div className="flex gap-4 items-center">
                 <span className="text-4xl">{activeModalSkill.emoji}</span>
                 <div>
                   <h3 className="text-xl font-bold text-white leading-tight">{activeModalSkill.name}</h3>
-                  <p className="text-[10px] text-neon font-bold tracking-widest uppercase mt-0.5">{activeModalSkill.category} PATHWAY</p>
+                  <p className="text-[10px] text-cyan-400 font-bold tracking-widest uppercase mt-0.5">{activeModalSkill.category} PATHWAY</p>
                 </div>
               </div>
               <button
@@ -215,7 +217,7 @@ export default function SkillsPage() {
               <div className="grid grid-cols-3 gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center">
                 <div>
                   <span className="block text-[10px] text-white/30 uppercase font-bold tracking-widest">Est. Earnings</span>
-                  <span className="text-neon text-sm font-black mt-1 block">{activeModalSkill.salaryPotential}</span>
+                  <span className="text-cyan-400 text-sm font-black mt-1 block">{activeModalSkill.salaryPotential}</span>
                 </div>
                 <div>
                   <span className="block text-[10px] text-white/30 uppercase font-bold tracking-widest">Duration</span>
@@ -252,7 +254,7 @@ export default function SkillsPage() {
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-white/5 bg-black/30 flex items-center justify-between gap-4">
+            <div className="p-6 border-t border-white/5 bg-black/40 flex items-center justify-between gap-4">
               <span className="text-xs text-white/30">Fully auto-graded & certified.</span>
               <div className="flex gap-3">
                 <button
@@ -263,7 +265,7 @@ export default function SkillsPage() {
                 </button>
                 <Link
                   href={`/classroom?skill=${activeModalSkill.id}`}
-                  className="px-6 py-2.5 rounded-xl bg-neon text-black font-black text-xs hover:shadow-[0_0_20px_rgba(57,255,20,0.4)] transition-all duration-300"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-black text-xs hover:shadow-cyan-md transition-all duration-300"
                 >
                   Launch Classroom
                 </Link>

@@ -14,8 +14,8 @@ import { getOverallProgress, Module, Lesson } from "@/lib/mockData";interface Si
 
 function LessonItem({ lesson }: { lesson: Lesson }) {
   const statusConfig = {
-    completed: { icon: "✓", textColor: "text-white/50", iconColor: "text-neon", lineThrough: "line-through" },
-    active: { icon: "●", textColor: "text-white", iconColor: "text-neon animate-pulse", lineThrough: "" },
+    completed: { icon: "✓", textColor: "text-white/50", iconColor: "text-cyan-400", lineThrough: "line-through" },
+    active: { icon: "●", textColor: "text-white", iconColor: "text-cyan-400 animate-pulse", lineThrough: "" },
     locked: { icon: "○", textColor: "text-white/25", iconColor: "text-white/15", lineThrough: "" },
   };
 
@@ -24,13 +24,13 @@ function LessonItem({ lesson }: { lesson: Lesson }) {
   return (
     <li
       className={`flex items-center gap-2.5 py-1.5 px-3 rounded-md text-sm ${config.textColor} ${
-        lesson.status === "active" ? "bg-neon/5 border border-neon/10" : ""
+        lesson.status === "active" ? "bg-cyan-500/5 border border-cyan-500/10" : ""
       }`}
     >
       <span className={`text-xs font-bold w-3 flex-shrink-0 ${config.iconColor}`}>{config.icon}</span>
       <span className={config.lineThrough}>{lesson.title}</span>
       {lesson.status === "active" && (
-        <span className="ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase bg-neon/20 text-neon border border-neon/20">
+        <span className="ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase bg-cyan-500/20 text-cyan-400 border border-cyan-500/20">
           Active
         </span>
       )}
@@ -48,7 +48,7 @@ function ModuleAccordion({ module }: { module: Module }) {
     <div
       className={`rounded-xl border transition-all duration-200 ${
         hasActive
-          ? "border-neon/20 bg-neon/[0.03] shadow-[0_0_15px_rgba(57,255,20,0.05)]"
+          ? "border-cyan-500/20 bg-cyan-500/[0.03] shadow-[0_0_15px_rgba(0,240,255,0.1)]"
           : "border-white/5 bg-white/[0.02]"
       }`}
     >
@@ -109,7 +109,7 @@ export default function Sidebar({ isOpen, onClose, curriculum, skillName }: Side
         className={`
           fixed md:relative top-0 left-0 h-full z-40 md:z-auto
           w-72 flex flex-col gap-4 p-4
-          bg-[#0d0d0d]/90 backdrop-blur-xl border-r border-white/5
+          glass-panel bg-[#050505]/90 border-x-0 border-r border-white/5
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
@@ -135,11 +135,11 @@ export default function Sidebar({ isOpen, onClose, curriculum, skillName }: Side
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between text-xs">
             <span className="text-white/40 font-medium">Overall Progress</span>
-            <span className="text-neon font-bold">{progress}%</span>
+            <span className="text-cyan-400 font-bold">{progress}%</span>
           </div>
           <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
             <div
-              className="h-full rounded-full bg-neon shadow-[0_0_8px_rgba(57,255,20,0.6)] transition-all duration-1000"
+              className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 shadow-cyan-sm transition-all duration-1000"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -160,16 +160,16 @@ export default function Sidebar({ isOpen, onClose, curriculum, skillName }: Side
         </div>
 
         {/* Certificate progress teaser */}
-        <div className="rounded-xl bg-neon/5 border border-neon/15 p-4 flex flex-col gap-2">
+        <div className="rounded-xl bg-cyan-500/5 border border-cyan-500/15 p-4 flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-neon text-base">🏆</span>
+            <span className="text-cyan-400 text-base">🏆</span>
             <span className="text-xs font-bold text-white">Certificate in progress</span>
           </div>
           <p className="text-[10px] text-white/30 leading-relaxed">
             Complete all modules to earn your verifiable {skillName.replace(" Mastery", "").replace(" Blueprint", "")} certificate.
           </p>
           <div className="w-full h-1 rounded-full bg-white/5 overflow-hidden">
-            <div className="h-full rounded-full bg-neon/40" style={{ width: `${progress}%` }} />
+            <div className="h-full rounded-full bg-gradient-to-r from-cyan-400/40 to-violet-500/40" style={{ width: `${progress}%` }} />
           </div>
         </div>
       </aside>

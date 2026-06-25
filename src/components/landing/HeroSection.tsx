@@ -25,31 +25,24 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden pt-16">
-      {/* Background: dot grid pattern */}
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(57,255,20,0.15) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden pt-16 bg-[#050505]">
+      {/* Background: gradient mesh pattern */}
+      <div className="absolute inset-0 bg-gradient-mesh opacity-60 mix-blend-screen" />
 
       {/* Background: glowing orbs */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-neon/5 blur-3xl animate-pulse-slow" />
-      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-neon/5 blur-3xl animate-pulse-slow [animation-delay:1.5s]" />
+      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-cyan-500/10 blur-[100px] animate-pulse-slow" />
+      <div className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] rounded-full bg-violet-600/10 blur-[100px] animate-pulse-slow [animation-delay:1.5s]" />
 
       {/* Pill badge */}
-      <div className="relative z-10 mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full bg-neon/10 border border-neon/20 text-neon text-xs font-semibold tracking-wide animate-fade-up">
-        <span className="w-1.5 h-1.5 rounded-full bg-neon animate-ping-slow" />
+      <div className="relative z-10 mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold tracking-wide animate-fade-up">
+        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping-slow" />
         AI-Powered Skill Acquisition · 2026
       </div>
 
       {/* Headline */}
       <h1 className="relative z-10 text-center max-w-4xl text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] text-white animate-fade-up [animation-delay:0.1s]">
         Traditional School is{" "}
-        <span className="text-neon [text-shadow:0_0_30px_rgba(57,255,20,0.5)]">Obsolete.</span>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500 animate-gradient-x bg-[length:200%_auto]">Obsolete.</span>
         <br />
         Learn What Actually Matters.
       </h1>
@@ -58,7 +51,7 @@ export default function HeroSection() {
       <div className="relative z-10 mt-6 flex items-center gap-3 animate-fade-up [animation-delay:0.2s]">
         <span className="text-white/40 text-lg md:text-xl font-medium">Currently teaching:</span>
         <span
-          className="text-neon text-lg md:text-xl font-bold transition-opacity duration-300"
+          className="text-cyan-400 text-lg md:text-xl font-bold transition-opacity duration-300"
           style={{ opacity: fade ? 1 : 0 }}
         >
           {ROTATING_SKILLS[skillIndex]}
@@ -76,7 +69,7 @@ export default function HeroSection() {
         <Link
           href="/skills"
           id="hero-cta-primary"
-          className="group relative px-8 py-4 rounded-xl bg-neon text-black font-black text-base tracking-tight transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(57,255,20,0.6),0_0_80px_rgba(57,255,20,0.2)] active:scale-100"
+          className="group relative px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-black text-base tracking-tight transition-all duration-300 hover:scale-105 hover:shadow-cyan-lg active:scale-100"
         >
           Start Chatting. Start Earning.
           <span className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -98,7 +91,8 @@ export default function HeroSection() {
           {["🧑‍💻", "👩‍🎨", "🧑‍💼", "👨‍🚀", "👩‍🔬"].map((emoji, i) => (
             <div
               key={i}
-              className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-sm"
+              className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-sm animate-float"
+              style={{ animationDelay: `${i * 0.2}s` }}
             >
               {emoji}
             </div>
@@ -111,8 +105,8 @@ export default function HeroSection() {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce-slow">
-        <div className="w-px h-8 bg-gradient-to-b from-neon/50 to-transparent" />
-        <div className="w-1.5 h-1.5 rounded-full bg-neon/50" />
+        <div className="w-px h-8 bg-gradient-to-b from-cyan-400/50 to-transparent" />
+        <div className="w-1.5 h-1.5 rounded-full bg-cyan-400/50" />
       </div>
     </section>
   );
