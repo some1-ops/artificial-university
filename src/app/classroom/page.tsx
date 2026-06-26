@@ -99,9 +99,9 @@ function ClassroomContent() {
             </svg>
             Syllabus
           </button>
-          <div className="w-7 h-7 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-xs font-bold text-cyan-400">
+          <Link href="/profile" className="w-7 h-7 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-xs font-bold text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all cursor-pointer">
             U
-          </div>
+          </Link>
         </div>
       </header>
 
