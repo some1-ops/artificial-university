@@ -2,11 +2,12 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
 
 function ProfileContent() {
   const [userData, setUserData] = useState({
     username: "User_0x94",
+    email: "operative@algeris.com",
     streak: 12,
     capitalUnlocked: "$1,000 Prop Firm",
     gauntletWinRate: "82.4%",
@@ -19,10 +20,18 @@ function ProfileContent() {
     // Attempt to fetch from Supabase
     async function fetchUser() {
       try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from("users")
-          .select("username, streak_count, capital_unlocked")
-          .limit(1)
+          .select("username, streak_count, capital_unlocked, email")
+          .eq('id', user.id)
           .single();
 
         if (error) throw error;
@@ -30,6 +39,7 @@ function ProfileContent() {
           setUserData((prev) => ({
             ...prev,
             username: data.username || prev.username,
+            email: data.email || user.email || prev.email,
             streak: data.streak_count || prev.streak,
             capitalUnlocked: data.capital_unlocked || "In Review",
           }));
@@ -204,7 +214,7 @@ function ProfileContent() {
                 <div>
                   <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Email Address</label>
                   <div className="mt-1 flex justify-between items-center">
-                    <span className="text-sm text-white/80">operative@algeris.com</span>
+                    <span className="text-sm text-white/80">{userData.email}</span>
                     <button className="text-xs text-cyan-400 hover:text-cyan-300 font-medium">Edit</button>
                   </div>
                 </div>
@@ -213,7 +223,16 @@ function ProfileContent() {
                   <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Password</label>
                   <div className="mt-1 flex justify-between items-center">
                     <span className="text-sm text-white/40">••••••••••••</span>
-                    <button className="text-xs text-cyan-400 hover:text-cyan-300 font-medium">Update</button>
+                    <button 
+                      onClick={async () => {
+                        const supabase = createClient();
+                        await supabase.auth.signOut();
+                        window.location.href = '/auth';
+                      }}
+                      className="text-xs text-red-400 hover:text-red-300 font-bold tracking-widest uppercase"
+                    >
+                      Sign Out
+                    </button>
                   </div>
                 </div>
               </div>

@@ -5,8 +5,20 @@
 // ============================================================
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function Navbar() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    async function checkSession() {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    }
+    checkSession();
+  }, []);
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 h-16 glass-panel border-x-0 border-t-0">
       {/* Logo + Wordmark */}
@@ -35,21 +47,30 @@ export default function Navbar() {
       </div>
 
       {/* CTA */}
-      <Link
-        href="/skills"
-        className="group relative flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 transition-all duration-300 hover:bg-cyan-500/20 hover:border-cyan-400 hover:shadow-cyan-md"
-      >
-        <span className="text-cyan-400 text-sm font-semibold group-hover:text-cyan-300 transition-colors">Enter Classroom</span>
-        <svg
-          className="w-3.5 h-3.5 text-cyan-400 group-hover:text-cyan-300 transition-all duration-200 group-hover:translate-x-0.5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2.5}
+      <div className="flex items-center gap-3">
+        {isAuthenticated === false && (
+          <Link href="/auth" className="hidden md:block text-sm font-bold text-white/50 hover:text-white transition-colors">
+            Login
+          </Link>
+        )}
+        <Link
+          href={isAuthenticated ? "/profile" : "/skills"}
+          className="group relative flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 transition-all duration-300 hover:bg-cyan-500/20 hover:border-cyan-400 hover:shadow-cyan-md"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-        </svg>
-      </Link>
+          <span className="text-cyan-400 text-sm font-semibold group-hover:text-cyan-300 transition-colors">
+            {isAuthenticated ? "Operative Dossier" : "Enter Classroom"}
+          </span>
+          <svg
+            className="w-3.5 h-3.5 text-cyan-400 group-hover:text-cyan-300 transition-all duration-200 group-hover:translate-x-0.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </Link>
+      </div>
     </nav>
   );
 }

@@ -10,7 +10,7 @@ import AchievementToast from "@/components/classroom/AchievementToast";
 import { useChat } from "@/hooks/useChat";
 import { SKILLS_DATA } from "@/lib/skillsData";
 import { Sandpack } from "@codesandbox/sandpack-react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
 
 interface LeaderboardUser {
   id: string;
@@ -30,6 +30,7 @@ function ClassroomContent() {
   const [isGauntletMode, setIsGauntletMode] = useState(false);
   const [leaderboardUsers, setLeaderboardUsers] = useState<LeaderboardUser[]>([]);
   const [dbError, setDbError] = useState(false);
+  const [currentUserInitial, setCurrentUserInitial] = useState("U");
   
   const { messages, isTyping, sendMessage, showAchievement, dismissAchievement } = useChat(activeSkill.id, isGauntletMode);
 
@@ -37,6 +38,17 @@ function ClassroomContent() {
   useEffect(() => {
     async function fetchLeaderboard() {
       try {
+        const supabase = createClient();
+        
+        // Also fetch current user for avatar
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase.from('users').select('username').eq('id', user.id).single();
+          if (profile?.username) {
+            setCurrentUserInitial(profile.username.charAt(0).toUpperCase());
+          }
+        }
+
         const { data, error } = await supabase
           .from("users")
           .select("id, username, streak_count, capital_unlocked, stake_locked")
@@ -100,7 +112,7 @@ function ClassroomContent() {
             Syllabus
           </button>
           <Link href="/profile" className="w-7 h-7 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-xs font-bold text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all cursor-pointer">
-            U
+            {currentUserInitial}
           </Link>
         </div>
       </header>
