@@ -36,7 +36,7 @@ export default function Navbar() {
 
       {/* CTA */}
       <Link
-        href="/classroom"
+        href="/skills"
         className="group relative flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 transition-all duration-300 hover:bg-cyan-500/20 hover:border-cyan-400 hover:shadow-cyan-md"
       >
         <span className="text-cyan-400 text-sm font-semibold group-hover:text-cyan-300 transition-colors">Enter Classroom</span>
