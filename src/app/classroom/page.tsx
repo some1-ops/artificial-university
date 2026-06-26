@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import CurriculumPanel from "@/components/classroom/CurriculumPanel";
@@ -34,7 +34,6 @@ function ClassroomContent() {
   const { messages, isTyping, sendMessage, showAchievement, dismissAchievement } = useChat(activeSkill.id, isGauntletMode);
 
   // Fetch leaderboard data
-  import { useEffect } from "react";
   useEffect(() => {
     async function fetchLeaderboard() {
       try {
