@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import CurriculumPanel from "@/components/classroom/CurriculumPanel";
 import ChatWindow from "@/components/classroom/ChatWindow";
 import InputArea from "@/components/classroom/InputArea";
 import AchievementToast from "@/components/classroom/AchievementToast";
@@ -15,6 +16,8 @@ function ClassroomContent() {
   const activeSkill = SKILLS_DATA.find((s) => s.id === skillId) || SKILLS_DATA[0];
 
   const [activeTab, setActiveTab] = useState("arena");
+  const [isCurriculumOpen, setIsCurriculumOpen] = useState(false);
+  const [isGauntletMode, setIsGauntletMode] = useState(false);
   const { messages, isTyping, sendMessage, showAchievement, dismissAchievement } = useChat(activeSkill.id);
 
   // Get current active lesson or fall back to skill name
@@ -54,11 +57,14 @@ function ClassroomContent() {
 
         {/* Right actions */}
         <div className="flex items-center gap-2">
-          <button className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-white/40 hover:text-white hover:bg-white/5 transition-all duration-200">
+          <button 
+            onClick={() => setIsCurriculumOpen(true)}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition-all duration-200"
+          >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
             </svg>
-            Progress
+            Syllabus
           </button>
           <div className="w-7 h-7 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-xs font-bold text-cyan-400">
             U
@@ -134,21 +140,29 @@ function ClassroomContent() {
           {activeTab === "arena" && (
             <div className="flex flex-col flex-1 overflow-hidden">
               {/* Chat header context bar */}
-              <div className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 py-3 border-b border-white/5 bg-[#050505]/50">
+              <div className={`flex-shrink-0 flex items-center justify-between px-4 md:px-8 py-3 border-b transition-colors duration-300 ${isGauntletMode ? 'bg-red-950/20 border-red-500/30' : 'bg-[#050505]/50 border-white/5'}`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                  <div className={`w-2 h-2 rounded-full animate-pulse ${isGauntletMode ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]' : 'bg-cyan-400'}`} />
                   <div>
-                    <p className="text-xs font-semibold text-white">AI Mentor ({activeSkill.emoji})</p>
-                    <p className="text-[10px] text-white/30">Active · {activeLesson}</p>
+                    <p className={`text-xs font-bold ${isGauntletMode ? 'text-red-400 uppercase tracking-widest' : 'text-white'}`}>
+                      {isGauntletMode ? 'GAUNTLET ACTIVE' : `AI Mentor (${activeSkill.emoji})`}
+                    </p>
+                    <p className={`text-[10px] ${isGauntletMode ? 'text-red-400/50' : 'text-white/30'}`}>
+                      {isGauntletMode ? 'Live Simulation: High Stress Event' : `Active · ${activeLesson}`}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="hidden sm:flex items-center gap-2 text-white/20">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                    </svg>
-                    <span className="text-[10px]">Ask anything — your AI won&apos;t judge</span>
-                  </div>
+                  <button 
+                    onClick={() => setIsGauntletMode(!isGauntletMode)}
+                    className={`px-3 py-1 text-[10px] font-bold rounded border uppercase tracking-wider transition-colors ${
+                      isGauntletMode 
+                        ? 'bg-red-500/20 text-red-400 border-red-500/40 hover:bg-red-500/30' 
+                        : 'bg-white/5 text-white/40 border-white/10 hover:bg-white/10 hover:text-white/80'
+                    }`}
+                  >
+                    {isGauntletMode ? 'Exit Simulation' : 'Enter Gauntlet'}
+                  </button>
                 </div>
               </div>
 
@@ -161,29 +175,134 @@ function ClassroomContent() {
           )}
 
           {activeTab === "terminal" && (
-            <div className="flex flex-1 items-center justify-center text-white/30 text-sm">
-              <div className="flex flex-col items-center gap-4">
-                <svg className="w-12 h-12 text-violet-500/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M4 15V9a2 2 0 012-2h12a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2z" />
-                </svg>
-                <p>The Terminal is currently offline. Sandboxes provisioning...</p>
+            <div className="flex flex-1 overflow-hidden bg-[#050505]">
+              {/* Left pane: Code/Config Editor */}
+              <div className="flex-1 flex flex-col border-r border-white/5">
+                <div className="h-10 flex items-center px-4 border-b border-white/5 bg-[#0a0a0c]">
+                  <span className="text-xs font-mono text-violet-400">~/sandbox/main.tsx</span>
+                </div>
+                <div className="flex-1 p-4 font-mono text-xs text-white/60 bg-[#050505]">
+                  <p className="text-emerald-400">// Autonomous Sandbox Initialized</p>
+                  <p className="text-blue-400">import <span className="text-white">{"{ Button }"}</span> from <span className="text-amber-300">"@/components/ui/button"</span>;</p>
+                  <br />
+                  <p className="text-violet-400">export default function <span className="text-blue-400">App</span>() {"{"}</p>
+                  <p className="pl-4">return (</p>
+                  <p className="pl-8 text-white/40">&lt;div className="h-screen bg-black"&gt;</p>
+                  <p className="pl-12 text-white/40">&lt;h1 className="text-white"&gt;Hello World&lt;/h1&gt;</p>
+                  <p className="pl-8 text-white/40">&lt;/div&gt;</p>
+                  <p className="pl-4">);</p>
+                  <p>{"}"}</p>
+                </div>
+                <div className="h-14 flex items-center justify-between px-4 border-t border-white/5 bg-[#0a0a0c]">
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-1.5 text-xs font-bold bg-violet-500 text-white rounded hover:bg-violet-600 transition-colors">Deploy to Staging</button>
+                    <button className="px-3 py-1.5 text-xs font-bold bg-white/5 text-white/70 rounded hover:bg-white/10 transition-colors">Render (Kling API)</button>
+                  </div>
+                  <span className="text-[10px] text-white/30 font-mono">Status: Connected</span>
+                </div>
+              </div>
+
+              {/* Right pane: Live Preview */}
+              <div className="w-1/2 flex flex-col bg-white">
+                <div className="h-10 flex items-center px-4 border-b border-black/10 bg-gray-100 shadow-sm z-10">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+                  </div>
+                  <div className="mx-4 flex-1 h-6 bg-white rounded flex items-center px-3 border border-black/5 text-[10px] text-black/50 font-mono">
+                    https://algeris.sandbox.io/u/user_0x94
+                  </div>
+                </div>
+                <div className="flex-1 bg-black flex items-center justify-center">
+                  <h1 className="text-white text-2xl font-bold font-sans">Hello World</h1>
+                </div>
               </div>
             </div>
           )}
 
           {activeTab === "leaderboard" && (
-            <div className="flex flex-1 items-center justify-center text-white/30 text-sm">
-              <div className="flex flex-col items-center gap-4">
-                <svg className="w-12 h-12 text-amber-500/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <p>The Leaderboard is compiling streaks...</p>
+            <div className="flex flex-1 p-8 overflow-y-auto">
+              <div className="max-w-4xl w-full mx-auto flex flex-col gap-8">
+                
+                {/* Streak Stake Module */}
+                <div className="p-6 rounded-2xl border border-amber-500/20 bg-amber-500/[0.02] flex items-center justify-between">
+                  <div>
+                    <h3 className="text-amber-400 font-bold uppercase tracking-widest text-xs mb-1">Your Streak Stake</h3>
+                    <div className="text-3xl font-black text-white">$29.00 <span className="text-sm font-medium text-white/40">Locked</span></div>
+                    <p className="text-xs text-white/40 mt-2">Maintain your daily progress for 30 days to reclaim your deposit.</p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <div className="text-2xl font-bold text-white mb-2">12 / 30 <span className="text-sm text-white/40">Days</span></div>
+                    <div className="w-48 h-2 rounded-full bg-white/5 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-amber-500 to-amber-300 w-[40%] rounded-full shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Black Market Capital Pool */}
+                <div>
+                  <h3 className="text-white/70 font-bold uppercase tracking-widest text-xs mb-4 px-2">The Black Market Capital Pool</h3>
+                  <div className="rounded-xl border border-white/5 overflow-hidden bg-[#050505]">
+                    <table className="w-full text-left text-sm">
+                      <thead className="bg-white/5 text-white/40 text-[10px] uppercase tracking-wider">
+                        <tr>
+                          <th className="px-4 py-3 font-medium">Rank</th>
+                          <th className="px-4 py-3 font-medium">Operative</th>
+                          <th className="px-4 py-3 font-medium">Win Rate / Grade</th>
+                          <th className="px-4 py-3 font-medium">Capital Unlocked</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5 text-white/80">
+                        <tr className="bg-amber-500/5">
+                          <td className="px-4 py-3 font-mono text-amber-400">01</td>
+                          <td className="px-4 py-3 font-bold">User_0x94 (You)</td>
+                          <td className="px-4 py-3 font-mono text-emerald-400">82.4% WR</td>
+                          <td className="px-4 py-3">
+                            <span className="px-2 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded text-xs font-bold">
+                              $1,000 Prop Firm
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-3 font-mono text-white/40">02</td>
+                          <td className="px-4 py-3">Student_442</td>
+                          <td className="px-4 py-3 font-mono text-emerald-400">A+ Storefront</td>
+                          <td className="px-4 py-3">
+                            <span className="px-2 py-1 bg-white/5 text-white/40 border border-white/5 rounded text-xs">
+                              In Review
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-3 font-mono text-white/40">03</td>
+                          <td className="px-4 py-3">Echo_88</td>
+                          <td className="px-4 py-3 font-mono text-emerald-400">79.1% WR</td>
+                          <td className="px-4 py-3">
+                            <span className="px-2 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded text-xs">
+                              Internal Agency
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
               </div>
             </div>
           )}
 
         </div>
       </div>
+
+      {/* Curriculum Panel */}
+      <CurriculumPanel
+        isOpen={isCurriculumOpen}
+        onClose={() => setIsCurriculumOpen(false)}
+        curriculum={activeSkill.curriculum}
+        skillName={activeSkill.name}
+      />
 
       {/* Achievement Toast */}
       <AchievementToast
