@@ -105,7 +105,7 @@ function ProfileContent() {
             <div className="w-full h-1.5 rounded-full bg-white/5 mt-6 overflow-hidden relative z-10">
               <div 
                 className="h-full bg-gradient-to-r from-amber-500 to-amber-300 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.5)]" 
-                style={{ width: \`\${Math.min((userData.streak / 30) * 100, 100)}%\` }}
+                style={{ width: `${Math.min((userData.streak / 30) * 100, 100)}%` }}
               ></div>
             </div>
           </div>
@@ -140,11 +140,11 @@ function ProfileContent() {
               ].map((cert, idx) => (
                 <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-[#0a0a0c] border border-white/5 hover:border-white/10 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className={\`w-10 h-10 rounded-lg flex items-center justify-center border \${
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${
                       cert.color === 'emerald' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
                       cert.color === 'amber' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' :
                       'bg-white/5 border-white/10 text-white/30'
-                    }\`}>
+                    }`}>
                       {cert.color === 'emerald' && (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -159,13 +159,13 @@ function ProfileContent() {
                         </svg>
                       )}
                     </div>
-                    <span className={\`font-medium \${cert.color === 'white' ? 'text-white/40' : 'text-white/90'}\`}>{cert.name}</span>
+                    <span className={`font-medium ${cert.color === 'white' ? 'text-white/40' : 'text-white/90'}`}>{cert.name}</span>
                   </div>
-                  <span className={\`text-xs font-bold uppercase tracking-widest \${
+                  <span className={`text-xs font-bold uppercase tracking-widest ${
                     cert.color === 'emerald' ? 'text-emerald-400' :
                     cert.color === 'amber' ? 'text-amber-400' :
                     'text-white/20'
-                  }\`}>
+                  }`}>
                     {cert.status}
                   </span>
                 </div>
@@ -187,9 +187,9 @@ function ProfileContent() {
                   </div>
                   <button 
                     onClick={() => setUserData(prev => ({ ...prev, isRuthlessProtocolActive: !prev.isRuthlessProtocolActive }))}
-                    className={\`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none \${userData.isRuthlessProtocolActive ? 'bg-red-500' : 'bg-white/10'}\`}
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${userData.isRuthlessProtocolActive ? 'bg-red-500' : 'bg-white/10'}`}
                   >
-                    <span className={\`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out \${userData.isRuthlessProtocolActive ? 'translate-x-5' : 'translate-x-0'}\`} />
+                    <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${userData.isRuthlessProtocolActive ? 'translate-x-5' : 'translate-x-0'}`} />
                   </button>
                 </div>
                 {userData.isRuthlessProtocolActive && (
