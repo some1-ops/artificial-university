@@ -9,6 +9,16 @@ import InputArea from "@/components/classroom/InputArea";
 import AchievementToast from "@/components/classroom/AchievementToast";
 import { useChat } from "@/hooks/useChat";
 import { SKILLS_DATA } from "@/lib/skillsData";
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { supabase } from "@/lib/supabase";
+
+interface LeaderboardUser {
+  id: string;
+  username: string;
+  streak_count: number;
+  capital_unlocked: string | null;
+  stake_locked: number;
+}
 
 function ClassroomContent() {
   const searchParams = useSearchParams();
@@ -18,7 +28,31 @@ function ClassroomContent() {
   const [activeTab, setActiveTab] = useState("arena");
   const [isCurriculumOpen, setIsCurriculumOpen] = useState(false);
   const [isGauntletMode, setIsGauntletMode] = useState(false);
-  const { messages, isTyping, sendMessage, showAchievement, dismissAchievement } = useChat(activeSkill.id);
+  const [leaderboardUsers, setLeaderboardUsers] = useState<LeaderboardUser[]>([]);
+  const [dbError, setDbError] = useState(false);
+  
+  const { messages, isTyping, sendMessage, showAchievement, dismissAchievement } = useChat(activeSkill.id, isGauntletMode);
+
+  // Fetch leaderboard data
+  import { useEffect } from "react";
+  useEffect(() => {
+    async function fetchLeaderboard() {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("id, username, streak_count, capital_unlocked, stake_locked")
+          .order("streak_count", { ascending: false })
+          .limit(10);
+        
+        if (error) throw error;
+        if (data) setLeaderboardUsers(data);
+      } catch (err) {
+        console.warn("Supabase not configured or error fetching leaderboard:", err);
+        setDbError(true);
+      }
+    }
+    fetchLeaderboard();
+  }, []);
 
   // Get current active lesson or fall back to skill name
   const activeLesson = activeSkill.curriculum
@@ -175,49 +209,21 @@ function ClassroomContent() {
           )}
 
           {activeTab === "terminal" && (
-            <div className="flex flex-1 overflow-hidden bg-[#050505]">
-              {/* Left pane: Code/Config Editor */}
-              <div className="flex-1 flex flex-col border-r border-white/5">
-                <div className="h-10 flex items-center px-4 border-b border-white/5 bg-[#0a0a0c]">
-                  <span className="text-xs font-mono text-violet-400">~/sandbox/main.tsx</span>
-                </div>
-                <div className="flex-1 p-4 font-mono text-xs text-white/60 bg-[#050505]">
-                  <p className="text-emerald-400">// Autonomous Sandbox Initialized</p>
-                  <p className="text-blue-400">import <span className="text-white">{"{ Button }"}</span> from <span className="text-amber-300">"@/components/ui/button"</span>;</p>
-                  <br />
-                  <p className="text-violet-400">export default function <span className="text-blue-400">App</span>() {"{"}</p>
-                  <p className="pl-4">return (</p>
-                  <p className="pl-8 text-white/40">&lt;div className="h-screen bg-black"&gt;</p>
-                  <p className="pl-12 text-white/40">&lt;h1 className="text-white"&gt;Hello World&lt;/h1&gt;</p>
-                  <p className="pl-8 text-white/40">&lt;/div&gt;</p>
-                  <p className="pl-4">);</p>
-                  <p>{"}"}</p>
-                </div>
-                <div className="h-14 flex items-center justify-between px-4 border-t border-white/5 bg-[#0a0a0c]">
-                  <div className="flex items-center gap-2">
-                    <button className="px-3 py-1.5 text-xs font-bold bg-violet-500 text-white rounded hover:bg-violet-600 transition-colors">Deploy to Staging</button>
-                    <button className="px-3 py-1.5 text-xs font-bold bg-white/5 text-white/70 rounded hover:bg-white/10 transition-colors">Render (Kling API)</button>
-                  </div>
-                  <span className="text-[10px] text-white/30 font-mono">Status: Connected</span>
-                </div>
-              </div>
-
-              {/* Right pane: Live Preview */}
-              <div className="w-1/2 flex flex-col bg-white">
-                <div className="h-10 flex items-center px-4 border-b border-black/10 bg-gray-100 shadow-sm z-10">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-                  </div>
-                  <div className="mx-4 flex-1 h-6 bg-white rounded flex items-center px-3 border border-black/5 text-[10px] text-black/50 font-mono">
-                    https://algeris.sandbox.io/u/user_0x94
-                  </div>
-                </div>
-                <div className="flex-1 bg-black flex items-center justify-center">
-                  <h1 className="text-white text-2xl font-bold font-sans">Hello World</h1>
-                </div>
-              </div>
+            <div className="flex-1 w-full h-full overflow-hidden bg-[#151515] [&_.sp-wrapper]:h-full [&_.sp-layout]:h-full [&_.sp-layout]:flex-1 [&_.sp-layout]:border-none [&_.sp-layout]:rounded-none">
+              <Sandpack 
+                template="react" 
+                theme="dark"
+                options={{
+                  showNavigator: true,
+                  showLineNumbers: true,
+                  showTabs: true,
+                  closableTabs: true,
+                  editorHeight: "100%",
+                }}
+                files={{
+                  "/App.js": `import React from "react";\n\nexport default function App() {\n  return (\n    <div style={{ padding: "2rem", fontFamily: "sans-serif", background: "#050505", color: "white", minHeight: "100vh" }}>\n      <h1 style={{ color: "#00f0ff" }}>Algeris Sandbox</h1>\n      <p>This is your live staging environment. Build your funnel here.</p>\n    </div>\n  );\n}`,
+                }}
+              />
             </div>
           )}
 
@@ -254,36 +260,62 @@ function ClassroomContent() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5 text-white/80">
-                        <tr className="bg-amber-500/5">
-                          <td className="px-4 py-3 font-mono text-amber-400">01</td>
-                          <td className="px-4 py-3 font-bold">User_0x94 (You)</td>
-                          <td className="px-4 py-3 font-mono text-emerald-400">82.4% WR</td>
-                          <td className="px-4 py-3">
-                            <span className="px-2 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded text-xs font-bold">
-                              $1,000 Prop Firm
-                            </span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="px-4 py-3 font-mono text-white/40">02</td>
-                          <td className="px-4 py-3">Student_442</td>
-                          <td className="px-4 py-3 font-mono text-emerald-400">A+ Storefront</td>
-                          <td className="px-4 py-3">
-                            <span className="px-2 py-1 bg-white/5 text-white/40 border border-white/5 rounded text-xs">
-                              In Review
-                            </span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="px-4 py-3 font-mono text-white/40">03</td>
-                          <td className="px-4 py-3">Echo_88</td>
-                          <td className="px-4 py-3 font-mono text-emerald-400">79.1% WR</td>
-                          <td className="px-4 py-3">
-                            <span className="px-2 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded text-xs">
-                              Internal Agency
-                            </span>
-                          </td>
-                        </tr>
+                        {/* If Supabase returns users, render them. Otherwise show mock data */}
+                        {leaderboardUsers.length > 0 ? (
+                          leaderboardUsers.map((user, index) => (
+                            <tr key={user.id} className={index === 0 ? "bg-amber-500/5" : ""}>
+                              <td className={`px-4 py-3 font-mono ${index === 0 ? "text-amber-400" : "text-white/40"}`}>
+                                {(index + 1).toString().padStart(2, '0')}
+                              </td>
+                              <td className={`px-4 py-3 ${index === 0 ? "font-bold" : ""}`}>{user.username || "Anonymous Operative"}</td>
+                              <td className="px-4 py-3 font-mono text-emerald-400">{user.streak_count} Days</td>
+                              <td className="px-4 py-3">
+                                {user.capital_unlocked ? (
+                                  <span className={`px-2 py-1 border rounded text-xs ${index === 0 ? "bg-amber-500/20 text-amber-400 border-amber-500/20 font-bold" : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"}`}>
+                                    {user.capital_unlocked}
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-1 bg-white/5 text-white/40 border border-white/5 rounded text-xs">
+                                    In Review
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <>
+                            <tr className="bg-amber-500/5">
+                              <td className="px-4 py-3 font-mono text-amber-400">01</td>
+                              <td className="px-4 py-3 font-bold">User_0x94 (You)</td>
+                              <td className="px-4 py-3 font-mono text-emerald-400">82.4% WR</td>
+                              <td className="px-4 py-3">
+                                <span className="px-2 py-1 bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded text-xs font-bold">
+                                  $1,000 Prop Firm
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-3 font-mono text-white/40">02</td>
+                              <td className="px-4 py-3">Student_442</td>
+                              <td className="px-4 py-3 font-mono text-emerald-400">A+ Storefront</td>
+                              <td className="px-4 py-3">
+                                <span className="px-2 py-1 bg-white/5 text-white/40 border border-white/5 rounded text-xs">
+                                  In Review
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-3 font-mono text-white/40">03</td>
+                              <td className="px-4 py-3">Echo_88</td>
+                              <td className="px-4 py-3 font-mono text-emerald-400">79.1% WR</td>
+                              <td className="px-4 py-3">
+                                <span className="px-2 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded text-xs">
+                                  Internal Agency
+                                </span>
+                              </td>
+                            </tr>
+                          </>
+                        )}
                       </tbody>
                     </table>
                   </div>

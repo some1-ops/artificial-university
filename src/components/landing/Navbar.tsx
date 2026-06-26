@@ -17,7 +17,7 @@ export default function Navbar() {
         </div>
         <div className="flex flex-col leading-none">
           <span className="text-white font-bold text-sm tracking-tight group-hover:text-white/80 transition-colors">artificial university</span>
-          <span className="text-white/30 text-[10px] tracking-widest uppercase">by AG</span>
+          <span className="text-white/30 text-[10px] tracking-widest uppercase">by Algeris</span>
         </div>
       </Link>
 

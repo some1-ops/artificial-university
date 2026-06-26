@@ -9,13 +9,13 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Artificial University | by AG",
+  title: "Artificial University | by Algeris",
   description:
     "Master high-income skills like web design, dropshipping, and AI integration by chatting with your personalized AI mentor. No boring lectures — just rapid skill building.",
   keywords: ["AI learning", "web design", "dropshipping", "online education", "skill building", "AI mentor"],
-  authors: [{ name: "AG" }],
+  authors: [{ name: "Algeris" }],
   openGraph: {
-    title: "Artificial University | by AG",
+    title: "Artificial University | by Algeris",
     description: "Traditional school is obsolete. Learn what actually matters.",
     type: "website",
   },

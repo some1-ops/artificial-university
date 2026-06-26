@@ -33,7 +33,7 @@ const FAQS: FAQItem[] = [
   },
   {
     question: "What is the Founders Guild strategic review?",
-    answer: "Founders Guild members get direct human review from AG. Once a week, you can submit your active landing page designs, copywriting scripts, or client outreach emails. AG will record a detailed video feedback session showing you exactly how to optimize your work.",
+    answer: "Founders Guild members get direct human review from Algeris. Once a week, you can submit your active landing page designs, copywriting scripts, or client outreach emails. Algeris will record a detailed video feedback session showing you exactly how to optimize your work.",
   },
 ];
 
@@ -51,7 +51,7 @@ const COMPARISON_MATRIX: ComparisonRow[] = [
   { feature: "Verifiable Certificates", audit: false, pro: true, founders: true },
   { feature: "Mentor Response Priority", audit: "Standard Speed", pro: "Priority Speed", founders: "Instant Real-Time" },
   { feature: "Human Portfolio Audits", audit: false, pro: false, founders: "Weekly Video Reviews" },
-  { feature: "AG 1-on-1 Monthly Strategy", audit: false, pro: false, founders: "1x 45-Min Call" },
+  { feature: "Algeris 1-on-1 Monthly Strategy", audit: false, pro: false, founders: "1x 45-Min Call" },
   { feature: "Exclusive Mastermind Discord", audit: false, pro: true, founders: true },
   { feature: "Client Outreach Proposals", audit: false, pro: false, founders: true },
 ];
@@ -255,7 +255,7 @@ export default function PricingPage() {
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-neon">✦</span>
-                  <strong>Weekly Video Audits</strong> by AG
+                  <strong>Weekly Video Audits</strong> by Algeris
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-neon">✦</span>

@@ -18,7 +18,7 @@ interface UseChatReturn {
   dismissAchievement: () => void;
 }
 
-export function useChat(skillId: string): UseChatReturn {
+export function useChat(skillId: string, isGauntletMode: boolean = false): UseChatReturn {
   const activeSkill = SKILLS_DATA.find((s) => s.id === skillId) || SKILLS_DATA[0];
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -62,6 +62,7 @@ export function useChat(skillId: string): UseChatReturn {
           body: JSON.stringify({
             messages: updatedMessages,
             skillId: activeSkill.id,
+            isGauntletMode,
           }),
         });
 
@@ -107,7 +108,7 @@ export function useChat(skillId: string): UseChatReturn {
         setIsTyping(false);
       }
     },
-    [messages, activeSkill]
+    [messages, activeSkill, isGauntletMode]
   );
 
   const dismissAchievement = useCallback(() => {

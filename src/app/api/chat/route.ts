@@ -3,7 +3,7 @@ import { SKILLS_DATA } from "@/lib/skillsData";
 
 export async function POST(request: Request) {
   try {
-    const { messages, skillId } = await request.json();
+    const { messages, skillId, isGauntletMode } = await request.json();
     const activeSkill = SKILLS_DATA.find((s) => s.id === skillId) || SKILLS_DATA[0];
 
     const token = process.env.HF_TOKEN;
@@ -15,9 +15,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Use the skill's hardcoded system prompt (locks AI inside the proprietary curriculum).
-    // Falls back to a generic mentor prompt if a skill somehow lacks one.
-    const systemPrompt =
+    let systemPrompt =
       activeSkill.systemPrompt ||
       `You are a direct, encouraging AI Mentor teaching "${activeSkill.name}".
 Your persona: Talk in a casual, conversational, and direct style (like a supportive peer who is an expert). Avoid dry academic lectures, walls of text, and formal numbered lists.
@@ -26,6 +24,16 @@ Guidelines:
 2. Use markdown formatting (bold, italic) and write clean code blocks for examples.
 3. Keep the user engaged by checking their understanding and asking one relevant question at the end.
 4. Integrate emojis naturally.`;
+
+    if (isGauntletMode) {
+      systemPrompt = `You are a ruthless, highly critical client/market simulator testing the user on "${activeSkill.name}". 
+Your persona: Toxic, demanding, unforgiving, impatient, and brutally honest. You are running a live simulation (a "Gauntlet").
+Guidelines:
+1. Attack their ideas and demand immediate, flawless results.
+2. Do NOT be supportive. Act like money is on the line and they are failing.
+3. Keep replies very short and punchy.
+4. End with a demanding question or ultimatum.`;
+    }
 
     // Build the HF messages array: system prompt first, then full conversation history
     const hfMessages = [

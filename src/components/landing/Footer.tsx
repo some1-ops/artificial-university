@@ -15,7 +15,7 @@ export default function Footer() {
           </div>
           <span className="text-white/30 text-sm font-medium">
             artificial university <span className="text-white/15">·</span>{" "}
-            <span className="text-neon/60">by AG</span>
+            <span className="text-neon/60">by Algeris</span>
           </span>
         </div>
 
