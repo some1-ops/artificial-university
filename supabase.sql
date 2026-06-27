@@ -6,18 +6,27 @@ CREATE TABLE users (
   email TEXT NOT NULL,
   username TEXT,
   streak_count INT DEFAULT 0,
-  stake_locked NUMERIC DEFAULT 29.00,
+  stake_locked NUMERIC DEFAULT 0.00,
+  stake_status TEXT DEFAULT 'idle', -- 'idle', 'locked', 'forfeited'
+  paystack_customer_id TEXT,
   highest_rank INT,
   capital_unlocked TEXT,
+  prop_challenge_wins INT DEFAULT 0,
+  prop_challenge_total INT DEFAULT 0,
+  elo_rating INT DEFAULT 1000,
   last_active TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Profiles / Leaderboard View can just query users table for now
--- E.g. SELECT username, streak_count, capital_unlocked FROM users ORDER BY streak_count DESC;
+-- Platform stats table (e.g. Community Pool)
+CREATE TABLE platform_stats (
+  id INT PRIMARY KEY DEFAULT 1,
+  community_pool NUMERIC DEFAULT 1430.00
+);
 
 -- Row Level Security
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE platform_stats ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view all users for leaderboard"
   ON users FOR SELECT
@@ -26,6 +35,10 @@ CREATE POLICY "Users can view all users for leaderboard"
 CREATE POLICY "Users can update own profile"
   ON users FOR UPDATE
   USING (auth.uid() = id);
+
+CREATE POLICY "Anyone can view platform stats"
+  ON platform_stats FOR SELECT
+  USING (true);
 
 -- Trigger to automatically create a public.users row on sign up
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -47,3 +60,4 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+

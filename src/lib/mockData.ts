@@ -16,6 +16,12 @@ export interface Message {
   role: MessageRole;
   content: string;
   timestamp: Date;
+  type?: "text" | "video" | "persona" | "logs";
+  videoUrl?: string;
+  fileName?: string;
+  personaData?: any;
+  subdomain?: string;
+  processingLogs?: { step: string; text: string }[];
 }
 
 export interface Lesson {

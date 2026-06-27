@@ -31,23 +31,39 @@ export async function GET(request: Request) {
 
     // 2. Process penalties
     for (const user of inactiveUsers) {
-      // Deduct from stake if they break their streak (e.g., $1 penalty)
-      const newStake = Math.max(0, user.stake_locked - 1);
-      
+      const penalty = Number(user.stake_locked || 0);
+
+      // If they had money staked, forfeit it and add to platform community pool
+      if (penalty > 0) {
+        const { data: stats } = await supabase
+          .from("platform_stats")
+          .select("community_pool")
+          .eq("id", 1)
+          .single();
+        
+        const currentPool = Number(stats?.community_pool || 1430.00);
+        const newPool = currentPool + penalty;
+
+        await supabase
+          .from("platform_stats")
+          .update({ community_pool: newPool })
+          .eq("id", 1);
+      }
+
       await supabase
         .from("users")
         .update({
           streak_count: 0, // Reset streak
-          stake_locked: newStake,
+          stake_locked: 0.00,
+          stake_status: "forfeited",
         })
         .eq("id", user.id);
 
-      // In a real app, trigger an email/SMS here using Resend or Twilio
       roastedUsers.push({
         id: user.id,
         email: user.email,
-        penalty: "$1.00",
-        message: "Wake up. Your streak is dead and your capital is bleeding. Get back in the Arena."
+        penalty: `$${penalty.toFixed(2)}`,
+        message: "Bro, you really paid $29 this month just to ghost the dashboard? The market doesn't care that you're tired. Log in and finish the OFM module before I drop your rank on the leaderboard."
       });
     }
 

@@ -13,7 +13,7 @@ import { SKILLS_DATA } from "@/lib/skillsData";
 interface UseChatReturn {
   messages: Message[];
   isTyping: boolean;
-  sendMessage: (text: string) => void;
+  sendMessage: (text: string, file?: File | null) => void;
   showAchievement: boolean;
   dismissAchievement: () => void;
 }
@@ -33,12 +33,106 @@ export function useChat(skillId: string, isGauntletMode: boolean = false): UseCh
     setShowAchievement(false);
   }, [activeSkill]);
 
-  const sendMessage = useCallback(
-    async (text: string) => {
-      if (!text.trim()) return;
+  const animateLogs = async (
+    logs: { step: string; text: string }[],
+    finalMessage: Message
+  ) => {
+    // Create a message placeholder for logs
+    const logMsgId = `logs-${Date.now()}`;
+    const initialLogMessage: Message = {
+      id: logMsgId,
+      role: "ai",
+      content: "Initializing Algeris Sandbox Rig...",
+      timestamp: new Date(),
+      type: "logs",
+      processingLogs: [],
+    };
 
+    setMessages((prev) => [...prev, initialLogMessage]);
+
+    // Push logs one by one
+    for (let i = 0; i < logs.length; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setMessages((prev) =>
+        prev.map((msg) => {
+          if (msg.id === logMsgId) {
+            return {
+              ...msg,
+              content: `Processing: ${logs[i].text}`,
+              processingLogs: [...(msg.processingLogs || []), logs[i]],
+            };
+          }
+          return msg;
+        })
+      );
+    }
+
+    // Finally append the completed message (video or persona card)
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    setMessages((prev) =>
+      prev.filter((msg) => msg.id !== logMsgId).concat(finalMessage)
+    );
+    setIsTyping(false);
+  };
+
+  const sendMessage = useCallback(
+    async (text: string, file?: File | null) => {
       userMessageCount.current += 1;
       const currentCount = userMessageCount.current;
+
+      // 1. Handle File Upload (OFM Generator Flow)
+      if (file) {
+        const userMessage: Message = {
+          id: `msg-user-${Date.now()}`,
+          role: "user",
+          content: `Uploaded reference image: **${file.name}** (${(file.size / 1024).toFixed(1)} KB)`,
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, userMessage]);
+        setIsTyping(true);
+
+        try {
+          const body = new FormData();
+          body.append("image", file);
+
+          const res = await fetch("/api/ofm-generator", {
+            method: "POST",
+            body,
+          });
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+
+          const finalPersonaMsg: Message = {
+            id: `msg-ai-persona-${Date.now()}`,
+            role: "ai",
+            content: `AI Persona successfully generated. Image EXIF headers stripped, SHA-256 fingerprint spoofed. Wildcard staging link deployed to: **${data.subdomain}**`,
+            timestamp: new Date(),
+            type: "persona",
+            personaData: data.persona,
+            subdomain: data.subdomain,
+          };
+
+          await animateLogs(data.logs, finalPersonaMsg);
+        } catch (err: any) {
+          console.error("OFM generation failed:", err);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `msg-ai-err-${Date.now()}`,
+              role: "ai",
+              content: `Failed to strip image headers & generate persona. Error: ${err.message}`,
+              timestamp: new Date(),
+            },
+          ]);
+          setIsTyping(false);
+        }
+        return;
+      }
+
+      // If no text, return
+      if (!text.trim()) return;
 
       const userMessage: Message = {
         id: `msg-user-${Date.now()}`,
@@ -47,13 +141,59 @@ export function useChat(skillId: string, isGauntletMode: boolean = false): UseCh
         timestamp: new Date(),
       };
 
-      // Stage user message locally
       const updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
       setIsTyping(true);
 
+      // 2. Handle YouTube Rendering Rig Command
+      const isRenderCommand =
+        text.toLowerCase().includes("render") &&
+        (text.toLowerCase().includes("script") || text.toLowerCase().includes("voice"));
+
+      if (isRenderCommand) {
+        try {
+          const res = await fetch("/api/render-video", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              script: text,
+              voice: text.toLowerCase().includes("mysterious") ? "mysterious" : "standard narrative",
+              background: text.toLowerCase().includes("dark") ? "dark atmospheric" : "cinematic loop",
+            }),
+          });
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+
+          const finalVideoMsg: Message = {
+            id: `msg-ai-video-${Date.now()}`,
+            role: "ai",
+            content: `Stitched and compiled video. ElevenLabs audio stitched with Kling AI loops using FFMPEG.`,
+            timestamp: new Date(),
+            type: "video",
+            videoUrl: data.videoUrl,
+            fileName: data.fileName,
+          };
+
+          await animateLogs(data.logs, finalVideoMsg);
+        } catch (err: any) {
+          console.error("YouTube render failed:", err);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `msg-ai-err-${Date.now()}`,
+              role: "ai",
+              content: `Failed to compile audio and video loops. Error: ${err.message}`,
+              timestamp: new Date(),
+            },
+          ]);
+          setIsTyping(false);
+        }
+        return;
+      }
+
+      // 3. Regular Chat Completion Flow
       try {
-        // Attempt live chat completion
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: {
@@ -91,12 +231,11 @@ export function useChat(skillId: string, isGauntletMode: boolean = false): UseCh
         if (currentCount === 2) {
           setTimeout(() => setShowAchievement(true), 500);
         }
-
       } catch (error) {
         console.warn("API failure, inserting error message:", error);
-        
+
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        
+
         const aiMessage: Message = {
           id: `msg-ai-${Date.now()}`,
           role: "ai",

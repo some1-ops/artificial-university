@@ -7,7 +7,7 @@
 import { useState, useRef, KeyboardEvent } from "react";
 
 interface InputAreaProps {
-  onSend: (text: string) => void;
+  onSend: (text: string, file?: File | null) => void;
   disabled: boolean;
 }
 
@@ -62,6 +62,29 @@ export default function InputArea({ onSend, disabled }: InputAreaProps) {
             : "border-white/10 focus-within:border-cyan-500/40 focus-within:shadow-[0_0_20px_rgba(0,240,255,0.15)]"
         }`}
       >
+        {/* Attachment button */}
+        <label
+          className={`flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 ${
+            disabled ? "opacity-30 cursor-not-allowed" : "hover:bg-white/5 text-white/40 hover:text-white"
+          }`}
+        >
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            disabled={disabled}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                onSend("", file);
+              }
+            }}
+          />
+          <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 0l-3.536 3.536m3.536-3.536L14.828 4.22a5 5 0 00-7.072 0l-4.95 4.95a5 5 0 000 7.072l3.182 3.182a5 5 0 007.071 0l4.95-4.95a5 5 0 000-7.07l-3.181-3.182z" />
+          </svg>
+        </label>
+
         {/* Textarea */}
         <textarea
           ref={textareaRef}
