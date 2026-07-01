@@ -2,9 +2,11 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 function ProfileContent() {
+  const router = useRouter();
   const [userData, setUserData] = useState({
     username: "User_0x94",
     email: "operative@algeris.com",
@@ -58,7 +60,7 @@ function ProfileContent() {
       {/* ── Top Bar ── */}
       <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 h-16 border-b border-white/5 bg-[#0a0a0c] z-20 sticky top-0">
         <div className="flex items-center gap-4">
-          <Link href="/skills" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center transition-all duration-200 group-hover:border-cyan-500/50">
               <span className="text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-violet-500 font-black text-xs">AU</span>
             </div>
@@ -68,9 +70,18 @@ function ProfileContent() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Link href="/classroom" className="px-4 py-1.5 rounded-lg text-xs font-semibold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition-all duration-200">
-            Return to Arena
-          </Link>
+          <button 
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push("/classroom");
+              }
+            }}
+            className="px-4 py-1.5 rounded-lg text-xs font-semibold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition-all duration-200 cursor-pointer"
+          >
+            ← Return
+          </button>
         </div>
       </header>
 

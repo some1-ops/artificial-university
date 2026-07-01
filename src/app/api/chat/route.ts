@@ -39,7 +39,7 @@ Grading Rules:
   followed by congratulations on unlocking their Web Design certification.
 
 Keep replies short, demanding, and realistic of a toxic client. Start by demanding a massive website for next to nothing.`;
-      } else if (skillId === "forex") {
+      } else if (skillId === "forex" || skillId === "forex-trading") {
         systemPrompt = `You are the KTL Axis Forex simulator. A massive news event (FOMC) is dropping.
 Instruct the user that they have exactly 60 seconds to identify and map the KTL Axis (Key Level, Time Killzone, and IRL vs ERL Liquidity) on the chart widget.
 Tell them: "The candle is about to drop. Map the KTL Axis on the chart now, or blow up your account. Select the Key Level, Time Killzone, and sweep type."

@@ -336,6 +336,25 @@ function ClassroomContent() {
     </html>
   `;
 
+  const sandpackCode = code && (code.includes("import") || code.includes("export default") || code.includes("return"))
+    ? code
+    : `import React from "react";
+
+export default function App() {
+  return (
+    <div style={{ padding: "2rem", fontFamily: "sans-serif", background: "#050505", color: "white", minHeight: "100vh" }}>
+      <h1 style={{ color: "#00f0ff" }}>Algeris Sandbox</h1>
+      <p style={{ color: "rgba(255,255,255,0.4)" }}>This is your live staging environment. Build your funnel here.</p>
+      <div style={{ marginTop: "2rem", border: "1px dashed rgba(255,255,255,0.1)", padding: "1.5rem", borderRadius: "8px" }}>
+        <h3 style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", marginBottom: "8px" }}>Active Chat Code Block:</h3>
+        <pre style={{ background: "rgba(0,0,0,0.4)", padding: "10px", borderRadius: "6px", fontFamily: "monospace", whiteSpace: "pre-wrap", fontSize: "12px", color: "#39ff14", overflowX: "auto" }}>
+          {\`${code ? code.replace(/\\/g, "\\\\").replace(/\`/g, "\\\`").replace(/\$/g, "\\$") : "No custom code generated in the chat yet. Go to 'The Arena' and ask the mentor to build a landing page!"}\`}
+        </pre>
+      </div>
+    </div>
+  );
+}`;
+
   // Get current active lesson or fall back to skill name
   const activeLesson = activeSkill.curriculum
     .flatMap((m) => m.lessons)
@@ -520,14 +539,181 @@ function ClassroomContent() {
                 </div>
               )}
 
-              {/* Forex Path KTL Gauntlet Live Chart */}
-              {activeSkill.id === "forex" && isGauntletMode && (
-                <div className="w-1/2 hidden lg:block">
-                  <KtlGauntlet
-                    onSuccess={handleGauntletSuccess}
-                    onFailure={handleGauntletFailure}
-                    onClose={() => setIsGauntletMode(false)}
-                  />
+              {/* Forex Path: KtlGauntlet (if Gauntlet) OR TradingView Widget (if not Gauntlet) */}
+              {(activeSkill.id === "forex" || activeSkill.id === "forex-trading") && (
+                <div className="w-1/2 hidden lg:block border-l border-white/5">
+                  {isGauntletMode ? (
+                    <KtlGauntlet
+                      onSuccess={handleGauntletSuccess}
+                      onFailure={handleGauntletFailure}
+                      onClose={() => setIsGauntletMode(false)}
+                    />
+                  ) : (
+                    <div className="h-full flex flex-col bg-[#050508]">
+                      <div className="h-12 border-b border-white/5 px-4 flex items-center justify-between bg-[#0b0b0e]">
+                        <span className="text-xs font-bold text-white/80 tracking-widest uppercase">Live Forex Market Feed</span>
+                        <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                          Connected
+                        </span>
+                      </div>
+                      <div className="flex-1 w-full bg-black relative">
+                        <iframe
+                          src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_chart&symbol=FX%3AEURUSD&interval=5&hidesidetoolbar=1&symboledit=0&saveimage=1&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Etc%2FUTC&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utm_source=localhost&utm_medium=widget&utm_campaign=chart&utm_term=FX%3AEURUSD"
+                          className="w-full h-full border-none"
+                          title="TradingView Live Chart"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* AI OFM Hub Preview */}
+              {activeSkill.id === "ai-ofm" && (
+                <div className="w-1/2 hidden lg:flex flex-col bg-[#050508] overflow-hidden border-l border-white/5">
+                  <div className="h-12 border-b border-white/5 px-4 flex items-center justify-between bg-[#0b0b0e]">
+                    <span className="text-xs font-bold text-white/80 tracking-widest uppercase">AI OFM Identity Sandbox</span>
+                    <span className="text-[10px] text-violet-400 font-mono uppercase">Status: Idle</span>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 text-white bg-black/40">
+                    {(() => {
+                      const personaMsg = [...messages].reverse().find(m => m.type === "persona");
+                      if (personaMsg && personaMsg.personaData) {
+                        const persona = personaMsg.personaData;
+                        return (
+                          <div className="flex flex-col gap-5 animate-fade-up">
+                            <div className="p-5 rounded-2xl border border-violet-500/20 bg-violet-950/5 flex flex-col gap-4">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <span className="text-[9px] font-bold text-violet-400 uppercase tracking-widest bg-violet-500/10 px-2 py-0.5 rounded border border-violet-500/25">Active Persona</span>
+                                  <h4 className="text-xl font-black mt-2 text-white">{persona.name}</h4>
+                                  <p className="text-xs text-white/40">{persona.niche} · Age {persona.age}</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-lg">👤</div>
+                              </div>
+                              <p className="text-xs text-white/70 leading-relaxed bg-white/5 p-3 rounded-lg border border-white/5">
+                                <strong>Aesthetic:</strong> {persona.aesthetic}
+                              </p>
+                              <div className="flex flex-col gap-1.5">
+                                <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Daily Routine</span>
+                                <ul className="text-xs text-white/60 list-disc list-inside flex flex-col gap-1">
+                                  {persona.daily_routine?.map((item: string, i: number) => (
+                                    <li key={i}>{item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                            <div className="p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/20 flex flex-col gap-2">
+                              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Wildcard Subdomain Live DOM</span>
+                              <div className="flex justify-between items-center bg-black/40 border border-white/10 rounded-lg p-2 text-xs font-mono text-cyan-300">
+                                <span className="truncate">{personaMsg.subdomain}</span>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(personaMsg.subdomain || "");
+                                    alert("Wildcard subdomain copied!");
+                                  }}
+                                  className="ml-2 text-[10px] text-cyan-400 hover:text-cyan-300 font-bold uppercase cursor-pointer"
+                                >
+                                  Copy
+                                </button>
+                              </div>
+                              <div className="h-64 rounded-lg bg-neutral-900 overflow-hidden border border-white/5 mt-2">
+                                <iframe
+                                  srcDoc={`
+                                    <!DOCTYPE html>
+                                    <html>
+                                      <body style="background: #050505; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; text-align: center;">
+                                        <div style="margin-top: 20px; border: 1px solid rgba(138,43,226,0.3); padding: 20px; border-radius: 12px; background: rgba(255,255,255,0.02); max-w: 300px;">
+                                          <div style="font-size: 24px; margin-bottom: 10px;">👑</div>
+                                          <h3 style="margin: 0; color: #a855f7;">${persona.name}</h3>
+                                          <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin: 5px 0 15px 0;">${persona.niche}</p>
+                                          <p style="font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.5;">Welcome to my private space. Exclusive content updates posted daily.</p>
+                                        </div>
+                                      </body>
+                                    </html>
+                                  `}
+                                  className="w-full h-full border-none"
+                                  title="OFM Subdomain Preview"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="h-full flex flex-col justify-center items-center text-center py-20 px-4">
+                          <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-xl mb-4">👤</div>
+                          <h4 className="text-sm font-bold text-white mb-2">No Active Persona</h4>
+                          <p className="text-xs text-white/40 max-w-xs leading-relaxed">Upload a reference image in the chat to strip metadata and trigger AI persona generation.</p>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              {/* YouTube Automation Rig Hub Preview */}
+              {activeSkill.id === "youtube-automation" && (
+                <div className="w-1/2 hidden lg:flex flex-col bg-[#050508] overflow-hidden border-l border-white/5">
+                  <div className="h-12 border-b border-white/5 px-4 flex items-center justify-between bg-[#0b0b0e]">
+                    <span className="text-xs font-bold text-white/80 tracking-widest uppercase">YouTube Rendering Rig</span>
+                    <span className="text-[10px] text-cyan-400 font-mono uppercase">FFMPEG Status: Ready</span>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 text-white bg-black/40">
+                    {(() => {
+                      const videoMsg = [...messages].reverse().find(m => m.type === "video");
+                      if (videoMsg && videoMsg.videoUrl) {
+                        return (
+                          <div className="flex flex-col gap-5 animate-fade-up">
+                            <div className="p-4 rounded-2xl border border-white/10 bg-black/60 overflow-hidden flex flex-col gap-3">
+                              <div className="flex justify-between items-center border-b border-white/5 pb-2 mb-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                  <span className="text-xs font-bold text-white/80 font-mono truncate max-w-[200px]">{videoMsg.fileName}</span>
+                                </div>
+                                <a 
+                                  href={videoMsg.videoUrl} 
+                                  target="_blank" 
+                                  rel="noreferrer" 
+                                  className="text-[10px] bg-cyan-500 text-black px-2 py-0.5 rounded font-black uppercase cursor-pointer hover:bg-cyan-400 transition-colors"
+                                >
+                                  Download
+                                </a>
+                              </div>
+                              <div className="aspect-[9/16] max-h-[320px] rounded-xl overflow-hidden bg-neutral-950 border border-white/5 relative flex items-center justify-center">
+                                <video 
+                                  src={videoMsg.videoUrl} 
+                                  controls 
+                                  className="w-full h-full object-cover" 
+                                />
+                              </div>
+                            </div>
+                            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col gap-2">
+                              <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Active Render Pipeline Settings</span>
+                              <div className="grid grid-cols-2 gap-3 text-[11px] font-mono mt-1">
+                                <div className="p-2 bg-black/40 rounded border border-white/5">
+                                  <div className="text-white/40 mb-1">Voice Profile</div>
+                                  <div className="text-cyan-400 font-bold">ElevenLabs "Mysterious"</div>
+                                </div>
+                                <div className="p-2 bg-black/40 rounded border border-white/5">
+                                  <div className="text-white/40 mb-1">Visual Style</div>
+                                  <div className="text-violet-400 font-bold">Kling 5s Loop (Dark Atmospheric)</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="h-full flex flex-col justify-center items-center text-center py-20 px-4">
+                          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-xl mb-4">🎬</div>
+                          <h4 className="text-sm font-bold text-white mb-2">No Active Renders</h4>
+                          <p className="text-xs text-white/40 max-w-xs leading-relaxed">Type your video script in the chat. For example: <i>"Render this script: In the shadows of the old city..."</i> to output stitched FFMPEG media loops.</p>
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </div>
               )}
 
@@ -547,7 +733,7 @@ function ClassroomContent() {
                   editorHeight: "100%",
                 }}
                 files={{
-                  "/App.js": `import React from "react";\n\nexport default function App() {\n  return (\n    <div style={{ padding: "2rem", fontFamily: "sans-serif", background: "#050505", color: "white", minHeight: "100vh" }}>\n      <h1 style={{ color: "#00f0ff" }}>Algeris Sandbox</h1>\n      <p>This is your live staging environment. Build your funnel here.</p>\n    </div>\n  );\n}`,
+                  "/App.js": sandpackCode,
                 }}
               />
             </div>
